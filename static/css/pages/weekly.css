@@ -1,0 +1,90 @@
+/* ==========================================================================
+   Nexo ERP — 주간업무보고
+   ========================================================================== */
+
+.split--weekly {
+  grid-template-columns: 1fr 300px;
+  gap: 14px;
+  align-items: start;
+}
+
+/* --- 주차 이동 ------------------------------------------------------------ */
+
+/* --- 이번 주 요약 ---------------------------------------------------------- */
+
+.summary {
+  padding: 18px;
+}
+
+.summary__title {
+  margin: 0 0 14px;
+}
+
+.summary__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.summary__row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-5);
+}
+
+.summary__row span {
+  color: var(--ink-3);
+}
+
+.summary__row--last {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.summary__bar {
+  margin-top: 16px;
+  height: 8px;
+  display: flex;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--line);
+}
+
+.summary__done {
+  background: var(--primary);
+}
+
+.summary__doing {
+  background: var(--primary-soft);
+}
+
+.summary__rate {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+/* --- 읽기 전용 실적 테이블 --------------------------------------------------- */
+
+.gridtable--spaced {
+  margin-bottom: 20px;
+}
+
+.weeklytask-grid--read {
+  font-size: 13px;
+}
+
+.weeklytask-grid--read > div {
+  padding: 10px !important;
+}
+
+.weeklytask-grid--read > .gridtable__no {
+  padding: 10px 8px !important;
+}
+
+.doc__section-title--block {
+  margin: 0 0 10px;
+}
+

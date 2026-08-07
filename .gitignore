@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Node
+node_modules/
+
+# 테스트 산출물
+tests/e2e/__shots__/
+
+# 에디터 · OS
+.vscode/
+.idea/
+.DS_Store

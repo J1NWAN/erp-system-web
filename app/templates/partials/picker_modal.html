@@ -1,0 +1,30 @@
+{# 인원 선택 모달 — 수신자 / 참조자 / 결재자 선택에 공통으로 쓰인다.
+   목록은 /api/directory 에서 받아 JS가 채운다. #}
+<div class="modal picker" data-picker hidden>
+  <div class="modal__scrim" data-action="close-picker"></div>
+
+  <div class="modal__panel modal__panel--wide picker__panel">
+    <div class="modal__head picker__head">
+      <div class="picker__head-row">
+        <div>
+          <h3 class="modal__title" data-picker-title>수신자 선택</h3>
+          <p class="modal__hint" data-picker-hint>여러 명을 선택할 수 있습니다</p>
+        </div>
+        <button class="picker__x" type="button" data-action="close-picker" aria-label="닫기">×</button>
+      </div>
+      <label class="sr-only" for="picker-search">이름 · 부서 · 직급 검색</label>
+      <input class="input picker__input" type="text" id="picker-search"
+             placeholder="이름 · 부서 · 직급 검색" data-picker-search autocomplete="off">
+    </div>
+
+    <div class="modal__body picker__body" data-picker-list></div>
+
+    <div class="modal__foot">
+      <div class="modal__count">선택 <strong data-picker-count>0</strong>명</div>
+      <div class="btn-row">
+        <button class="btn btn--ghost" type="button" data-action="close-picker">취소</button>
+        <button class="btn btn--primary picker__confirm" type="button" data-action="confirm-picker">추가</button>
+      </div>
+    </div>
+  </div>
+</div>

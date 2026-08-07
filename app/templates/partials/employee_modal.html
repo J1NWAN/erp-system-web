@@ -1,0 +1,88 @@
+{# 사원 등록 · 수정 모달 #}
+<div class="modal" data-emp-modal hidden>
+  <div class="modal__scrim" data-action="close-emp"></div>
+
+  <div class="modal__panel modal__panel--wide">
+    <div class="modal__head picker__head-row modal__head--split">
+      <div>
+        <h3 class="modal__title" data-emp-title>사원 등록</h3>
+        <p class="modal__hint" data-emp-hint>새 사원의 기본 정보와 권한을 입력하세요</p>
+      </div>
+      <button class="picker__x" type="button" data-action="close-emp" aria-label="닫기">×</button>
+    </div>
+
+    <div class="modal__body modalform">
+      <div class="form-grid form-grid--2">
+        <div>
+          <label class="modalform__label" for="emp-id">사번</label>
+          <input class="input" type="text" id="emp-id" placeholder="N-2026-000" data-emp-field="id">
+        </div>
+        <div>
+          <label class="modalform__label" for="emp-name">이름</label>
+          <input class="input" type="text" id="emp-name" placeholder="홍길동" data-emp-field="name">
+        </div>
+        <div>
+          <label class="modalform__label" for="emp-dept">부서</label>
+          <select class="select" id="emp-dept" data-emp-field="dept">
+            <option>개발본부</option><option>개발1팀</option><option>개발2팀</option>
+            <option>경영지원팀</option><option>영업팀</option>
+          </select>
+        </div>
+        <div>
+          <label class="modalform__label" for="emp-rank">직급</label>
+          <select class="select" id="emp-rank" data-emp-field="rank">
+            {% for name in rank_names %}
+            <option>{{ name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <label class="modalform__label" for="emp-joined">입사일</label>
+          <input class="input" type="date" id="emp-joined" data-emp-field="joined">
+        </div>
+        <div>
+          <label class="modalform__label" for="emp-leave">연차 (일)</label>
+          <input class="input" type="text" id="emp-leave" placeholder="15.0" data-emp-field="leave">
+          <div class="modalform__note" data-emp-leave-note></div>
+        </div>
+      </div>
+
+      <div>
+        <label class="modalform__label" for="emp-login">아이디</label>
+        <input class="input" type="text" id="emp-login" placeholder="hong.gildong" data-emp-field="login">
+        <div class="modalform__note" data-emp-login-note>로그인에 사용할 아이디입니다</div>
+      </div>
+
+      <div>
+        <label class="modalform__label" for="emp-email">이메일</label>
+        <input class="input" type="text" id="emp-email" placeholder="name@nexo.co.kr" data-emp-field="email">
+      </div>
+
+      <div class="modalform__section">
+        <div class="modalform__section-head">
+          <strong>권한</strong>
+          <span>권한 관리에서 만든 권한 중 하나를 부여합니다</span>
+        </div>
+        <div class="radiocards" data-emp-roles>
+          {% for r in roles %}
+          <button class="radiocard" type="button" data-emp-role="{{ r.key }}" aria-pressed="false">
+            <span class="radiocard__dot"></span>
+            <span class="radiocard__text">
+              <span class="radiocard__name">{{ r.name }}</span>
+              <span class="radiocard__scope">{{ r.scope }}</span>
+            </span>
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__foot modal__foot--emp">
+      <button class="btn btn--danger" type="button" data-emp-retire hidden>퇴사 처리</button>
+      <div class="btn-row modal__foot-actions">
+        <button class="btn btn--ghost" type="button" data-action="close-emp">취소</button>
+        <button class="btn btn--primary" type="button" data-emp-save>저장</button>
+      </div>
+    </div>
+  </div>
+</div>

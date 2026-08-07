@@ -1,0 +1,131 @@
+{% extends "layouts/app.html" %}
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/documents.css">
+<link rel="stylesheet" href="/static/css/pages/weekly.css">
+{% endblock %}
+
+{% block main %}
+<div class="page">
+
+  <div class="filterbar">
+    <div class="tabs">
+      <a class="tabs__btn {{ 'is-active' if tab == 'view' }}" href="/weekly?tab=view">조회</a>
+      <a class="tabs__btn {{ 'is-active' if tab == 'write' }}" href="/weekly?tab=write">작성</a>
+    </div>
+    <div class="weeknav">
+      <button class="weeknav__btn" type="button" aria-label="이전 주">‹</button>
+      <span class="weeknav__label">2026년 32주차 · 8/3 – 8/7</span>
+      <button class="weeknav__btn" type="button" aria-label="다음 주">›</button>
+    </div>
+  </div>
+
+  {% if tab == 'view' %}
+  {# ---------- 조회 ---------- #}
+  <div class="split split--weekly">
+    <div class="card card--flush">
+      <div class="card__head">
+        <h3 class="card__title">개발1팀 주간보고 제출 현황</h3>
+        <span class="card__note">6명 중 4명 제출</span>
+      </div>
+      <div class="table-wrap">
+        <div class="thead weekly-grid">
+          <div>작성자</div><div>제목</div><div>제출일시</div><div>상태</div>
+        </div>
+        {% for w in rows %}
+        <div class="trow weekly-grid">
+          <div>{{ w.writer }}</div>
+          <div class="tcell--muted tcell--ellipsis">{{ w.title }}</div>
+          <div class="tcell--num tcell--dim">{{ w.at }}</div>
+          <div><span class="pill pill--{{ w.state_tone }}">{{ w.state }}</span></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card summary">
+      <h3 class="card__title summary__title">이번 주 요약</h3>
+      <div class="summary__list">
+        <div class="summary__row"><span>등록된 업무</span><strong>34건</strong></div>
+        <div class="summary__row"><span>완료</span><strong>27건</strong></div>
+        <div class="summary__row"><span>진행중</span><strong>5건</strong></div>
+        <div class="summary__row summary__row--last"><span>보류</span><strong>2건</strong></div>
+      </div>
+      <div class="summary__bar">
+        <div class="summary__done" style="width:79%"></div>
+        <div class="summary__doing" style="width:15%"></div>
+      </div>
+      <div class="summary__rate">완료율 79%</div>
+    </div>
+  </div>
+
+  {% else %}
+  {# ---------- 작성 ---------- #}
+  <form class="card" method="get" action="/weekly" data-doc-form>
+    <input type="hidden" name="tab" value="view">
+    <div class="doc__body">
+
+      <div class="metatable">
+        <div class="metatable__key">제목</div>
+        <div class="metatable__val">
+          <label class="sr-only" for="w-title">제목</label>
+          <input class="table-input" type="text" id="w-title" value="[개발1팀] 32주차 주간업무보고 — 김지현">
+        </div>
+        <div class="metatable__key">수신자</div>
+        <div class="metatable__val">
+          <label class="sr-only" for="w-to">수신자</label>
+          <input class="table-input" type="text" id="w-to" value="최민서 부장">
+        </div>
+        <div class="metatable__key">참조자</div>
+        <div class="metatable__val">
+          <label class="sr-only" for="w-cc">참조자</label>
+          <input class="table-input" type="text" id="w-cc" value="박서준 책임, 개발1팀">
+        </div>
+      </div>
+
+      <div class="doc__section-head">
+        <h4 class="doc__section-title">금주 실적</h4>
+        <span class="card__note">일일업무일지에서 자동 불러오기 가능</span>
+      </div>
+
+      <div class="gridtable gridtable--spaced">
+        <div class="gridtable__inner">
+          <div class="thead weeklytask-grid">
+            <div class="tcell--center">No</div>
+            <div>시스템</div>
+            <div>내용</div>
+            <div>요청 접수일</div>
+            <div>업무 시작일</div>
+            <div>완료여부</div>
+          </div>
+          {% for t in tasks %}
+          <div class="trow weeklytask-grid weeklytask-grid--read">
+            <div class="tcell--center gridtable__no">{{ t.no }}</div>
+            <div>{{ t.system }}</div>
+            <div class="tcell--muted">{{ t.content }}</div>
+            <div class="tcell--num tcell--dim">{{ t.received }}</div>
+            <div class="tcell--num tcell--dim">{{ t.started }}</div>
+            <div><span class="pill pill--{{ t.done_tone }}">{{ t.done }}</span></div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <h4 class="doc__section-title doc__section-title--block">차주 계획</h4>
+      <label class="sr-only" for="w-plan">차주 계획</label>
+      <textarea class="textarea" id="w-plan" rows="4">1. 휴가 결재선 다단계 처리 로직 개발
+2. 조직도 API 성능 개선 (목표 300ms 이하)
+3. 8월 정기 배포 QA 지원</textarea>
+
+    </div>
+
+    <div class="doc__foot doc__foot--end">
+      <button class="btn btn--ghost btn--sm" type="button" data-toast-msg="임시저장했습니다.">임시저장</button>
+      <button class="btn btn--primary btn--sm doc__submit" type="submit">제출</button>
+    </div>
+  </form>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block page_scripts %}<script src="/static/js/doc-form.js"></script>{% endblock %}

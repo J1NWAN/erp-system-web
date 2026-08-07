@@ -1,0 +1,356 @@
+/* ==========================================================================
+   Nexo ERP — 대시보드
+   ========================================================================== */
+
+.page__bar-tabs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.split--dash-a {
+  grid-template-columns: 1.45fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.split--dash-b {
+  grid-template-columns: 1.55fr 1fr;
+  gap: 14px;
+  align-items: start;
+}
+
+/* --- 주간 팀 휴가 그리드 ---------------------------------------------------- */
+
+.weekgrid {
+  display: grid;
+  grid-template-columns: 82px repeat(5, 1fr);
+  gap: 4px;
+}
+
+.weekgrid--head {
+  margin-bottom: 8px;
+}
+
+.weekgrid--row {
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.weekgrid__dow {
+  font-size: 11px;
+  color: var(--ink-4);
+  text-align: center;
+}
+
+.weekgrid__dow.is-today {
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.weekgrid__name {
+  font-size: 12px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.weekcell {
+  height: 22px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  color: #fff;
+}
+
+.weekcell--none {
+  background: var(--soft);
+}
+
+.weekcell--full {
+  background: var(--primary);
+}
+
+.weekcell--half {
+  background: var(--primary-soft);
+}
+
+/* --- 공지사항 ------------------------------------------------------------- */
+
+.notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line-4);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.notice:last-child {
+  border-bottom: 0;
+}
+
+.notice:hover {
+  background: var(--soft);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.notice__title {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.notice__date {
+  font-size: 11px;
+  color: var(--ink-5);
+  white-space: nowrap;
+}
+
+.notice--compact {
+  align-items: center;
+}
+
+/* --- 오늘 해야 할 일 (다크 카드) --------------------------------------------- */
+
+.todo {
+  background: var(--navy);
+  color: var(--bg);
+  border-radius: var(--radius-card);
+  padding: 22px 24px;
+}
+
+.todo__label {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--primary-soft);
+  margin-bottom: 12px;
+}
+
+.todo__list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.todo__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 15px;
+  background: rgba(242, 242, 243, 0.07);
+  border-left: 3px solid var(--gray);
+}
+
+.todo__item--primary {
+  border-left-color: var(--primary);
+}
+
+.todo__item--warn {
+  border-left-color: #f0a04b;
+}
+
+.todo__item--muted {
+  border-left-color: var(--gray);
+}
+
+.todo__title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.todo__meta {
+  font-size: 12px;
+  color: rgba(242, 242, 243, 0.55);
+}
+
+.todo__btn {
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 14px;
+  background: transparent;
+  color: var(--bg);
+  border: 1px solid rgba(242, 242, 243, 0.3);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.todo__btn:hover {
+  background: rgba(242, 242, 243, 0.12);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.todo__btn--fill {
+  background: var(--primary);
+  color: #fff;
+  border: 0;
+  box-shadow: var(--shadow-btn);
+  font-weight: 600;
+}
+
+.todo__btn--fill:hover {
+  background: var(--primary-light);
+  color: #fff;
+}
+
+/* --- 최근 작성 문서 -------------------------------------------------------- */
+
+.recent {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 18px;
+  border-bottom: 1px solid var(--line-4);
+  font-size: 13px;
+}
+
+.recent:last-child {
+  border-bottom: 0;
+}
+
+.recent__date {
+  font-size: 11.5px;
+  color: var(--ink-5);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.recent__title {
+  flex: 1;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- 내 휴가 위젯 ---------------------------------------------------------- */
+
+.leavebox {
+  padding: 18px;
+}
+
+.leavebox__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.leavebox__figure {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.leavebox__num {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 0.9;
+}
+
+.leavebox__unit {
+  font-size: 13px;
+  color: var(--ink-4);
+  padding-bottom: 4px;
+}
+
+.leavebox__bar {
+  display: flex;
+  height: 8px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--line);
+  margin-bottom: 10px;
+}
+
+.leavebox__used {
+  background: var(--primary);
+}
+
+.leavebox__pending {
+  background: var(--primary-soft);
+}
+
+.leavebox__legend {
+  display: flex;
+  gap: 14px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+.dot--used {
+  background: var(--primary);
+}
+
+.dot--pending {
+  background: var(--primary-soft);
+}
+
+/* --- 오늘 휴가 팀원 -------------------------------------------------------- */
+
+.onleave {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 18px;
+}
+
+.onleave__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.onleave__avatar {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  background: var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.onleave__name {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.onleave__rank {
+  color: var(--ink-5);
+  font-weight: 400;
+}
+
+.onleave__tag {
+  font-size: 11px;
+  padding: 2px 7px;
+  background: var(--soft-2);
+  color: var(--primary-dark);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+
+/* 좁은 화면에서 시안 전환 탭이 가로폭을 채우도록 */
+@media (max-width: 700px) {
+  .page__bar-tabs {
+    width: 100%;
+  }
+}

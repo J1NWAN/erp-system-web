@@ -1,0 +1,49 @@
+{% from "partials/icons.html" import icon %}
+<header class="head">
+  <div class="head__title-wrap">
+    <h1 class="head__title">{{ page_title }}</h1>
+  </div>
+
+  <div class="head__actions">
+    <div class="head__date">
+      <span class="head__dot"></span>{{ today_label }}
+    </div>
+
+    <a class="head__bell" href="/approve" aria-label="결재 대기 {{ pending_count }}건">
+      {{ icon('bell', 16) }}
+      <span class="head__badge">{{ pending_count }}</span>
+    </a>
+
+    <div class="user" data-user-menu>
+      <button class="user__trigger" type="button" data-action="toggle-user-menu"
+              aria-expanded="false" aria-haspopup="true">
+        <span class="user__avatar">{{ user.initial }}</span>
+        <span class="user__text">
+          <span class="user__name">{{ user.name }}</span>
+          <span class="user__meta">{{ user.dept }} · {{ user.rank }}</span>
+        </span>
+        <span class="user__caret">{{ icon('chevron-down', 13, 1.8) }}</span>
+      </button>
+
+      <div class="user__pop" hidden>
+        <div class="user__scrim" data-action="close-user-menu"></div>
+        <div class="user__menu" role="menu">
+          <div class="user__menu-head">
+            <div class="user__menu-name">{{ user.name }} {{ user.rank }}</div>
+            <div class="user__menu-mail">{{ user.dept }} · {{ user.email }}</div>
+          </div>
+          <div class="user__menu-body">
+            <button class="user__item" type="button" role="menuitem" data-action="close-user-menu">
+              {{ icon('user', 15) }}내 정보
+            </button>
+            <form method="post" action="/logout">
+              <button class="user__item user__item--danger" type="submit" role="menuitem">
+                {{ icon('logout', 15) }}로그아웃
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

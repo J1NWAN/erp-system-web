@@ -1,0 +1,51 @@
+{% extends "layouts/app.html" %}
+{% block styles %}<link rel="stylesheet" href="/static/css/pages/documents.css">{% endblock %}
+
+{% block main %}
+<div class="page">
+
+  <div class="filterbar">
+    <div class="filterbar__group">
+      <label class="sr-only" for="f-period">기간</label>
+      <select class="select select--sm" id="f-period">
+        <option>전체 기간</option><option>이번 주</option><option>이번 달</option>
+      </select>
+      <label class="sr-only" for="f-writer">작성자</label>
+      <select class="select select--sm" id="f-writer">
+        <option>작성자 · 전체</option><option>본인</option><option>개발1팀</option>
+      </select>
+      <label class="sr-only" for="f-q">제목 · 내용 검색</label>
+      <input class="input input--sm filterbar__search" type="text" id="f-q" placeholder="제목 · 내용 검색">
+    </div>
+    <a class="btn btn--primary btn--sm" href="/daily/new">+ 업무일지 작성</a>
+  </div>
+
+  <div class="card card--flush">
+    <div class="table-wrap">
+      <div class="thead daily-grid">
+        <div>일자</div><div>제목</div><div>작성자</div><div>수신자</div><div>완료</div><div>상태</div>
+      </div>
+      {% for r in rows %}
+      <a class="trow daily-grid is-clickable" href="/daily/new">
+        <div class="tcell--num tcell--muted">{{ r.date }}</div>
+        <div class="tcell--ellipsis">{{ r.title }}</div>
+        <div class="tcell--muted">{{ r.writer }}</div>
+        <div class="tcell--muted tcell--ellipsis">{{ r.to }}</div>
+        <div class="tcell--muted">{{ r.done }}</div>
+        <div><span class="pill pill--{{ r.state_tone }}">{{ r.state }}</span></div>
+      </a>
+      {% endfor %}
+    </div>
+
+    <div class="pager">
+      <div>총 128건 중 1–7</div>
+      <div class="pager__nums">
+        <button class="pager__btn is-active" type="button" aria-current="page">1</button>
+        <button class="pager__btn" type="button">2</button>
+        <button class="pager__btn" type="button">3</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

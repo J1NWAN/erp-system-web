@@ -1,0 +1,25 @@
+{% from "partials/icons.html" import icon %}
+<aside class="side">
+  <div class="side__head">
+    <span class="mark"></span>
+    <div class="side__brand">Nexo ERP</div>
+  </div>
+
+  <nav class="side__nav" aria-label="주 메뉴">
+    {% for item in nav_items %}
+    <a class="side__link {{ 'is-active' if nav_key == item.key }}" href="{{ item.url }}"
+       {% if nav_key == item.key %}aria-current="page"{% endif %}>
+      {{ icon(item.icon) }}
+      <span class="side__label">{{ item.label }}</span>
+    </a>
+    {% endfor %}
+  </nav>
+
+  <div class="side__foot">
+    <button class="side__toggle" type="button" data-action="toggle-sidebar"
+            aria-label="메뉴 접기" aria-pressed="{{ 'true' if collapsed else 'false' }}">
+      {{ icon('menu') }}
+      <span class="side__label">메뉴 접기</span>
+    </button>
+  </div>
+</aside>

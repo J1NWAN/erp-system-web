@@ -1,0 +1,144 @@
+# Nexo ERP
+
+사내 업무 시스템 — 일일업무일지 · 주간업무보고 · 휴가 · 결재.
+
+Claude Design으로 만든 반응형 ERP 시안(`Nexo ERP.html`)을 **FastAPI + Jinja2 + 순수 CSS/JS**
+구조로 옮긴 구현체다. 원본 시안은 React 단일 파일에 모든 스타일이 인라인으로 들어가 있었고,
+이 저장소는 같은 화면을 레이아웃 분할 · 외부 CSS · 서버 렌더링으로 재구성했다.
+
+---
+
+## 실행
+
+```bash
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
+
+→ http://127.0.0.1:8000
+
+로그인 화면에서 아이디/비밀번호는 검증하지 않는다(시안 데모). 아무 값으로 **로그인**을 누르면
+대시보드로 들어간다.
+
+---
+
+## 구조
+
+```
+app/
+  main.py              FastAPI 진입점 · 정적 파일 마운트
+  templating.py        Jinja2 환경
+  data.py              데모 시드 데이터 + 휴가일수/캘린더 계산
+  store.py             메모리 상태 저장소 (권한 · 결재선처럼 화면에서 바뀌는 값)
+  view.py              템플릿에 넘길 뷰 모델 조립
+  routers/
+    pages.py           HTML 화면 라우터
+    api.py             JSON API 라우터
+  templates/
+    base.html          <head> · CSS 로드 순서
+    login.html         로그인 (앱 셸 미사용)
+    layouts/app.html   앱 셸 = 사이드바 + 헤더 + 메인
+    partials/          sidebar · header · icons · 모달 3종
+    pages/             화면별 본문
+static/
+  css/
+    pretendard.css     Pretendard 웹폰트 @font-face (self-host)
+    base.css           디자인 토큰 · 리셋 · 타이포그래피
+    layout.css         셸 · 사이드바 · 헤더 · 메인
+    components.css     카드 · 배지 · 탭 · 칩 · 버튼 · 테이블 · 폼 · 모달
+    responsive.css     브레이크포인트 (1180 / 1024 / 700 / 560)
+    pages/*.css        화면 고유 스타일
+  js/
+    app.js             사이드바 · 사용자 메뉴 · 인원 선택 모달 · 토스트
+    doc-form.js        업무일지 행 추가/삭제
+    leave.js           휴가 종류·구분 선택, 사용일수 계산
+    admin.js           권한 모달 · 사원 모달 · 결재선 전환
+  fonts/pretendard/    woff2 서브셋 92개 + OFL 라이선스
+tests/e2e/             Playwright 시나리오 테스트
+```
+
+### CSS 로드 순서
+
+`base → layout → components → (페이지 CSS) → responsive`
+
+페이지 CSS가 공통 컴포넌트보다 뒤에 오므로 화면별 덮어쓰기가 가능하고,
+`responsive.css`가 마지막이라 브레이크포인트 규칙이 항상 이긴다.
+
+> **주의** — 두 화면 이상에서 쓰는 클래스는 반드시 `components.css`에 둔다.
+> 페이지 CSS에 두면 그 파일을 불러오지 않는 화면에서 스타일이 조용히 빠진다.
+> (`tests/e2e` 외에 `python3 tools/audit_css.py`로도 확인 가능)
+
+---
+
+## 화면
+
+| 경로 | 화면 |
+|------|------|
+| `/` | 로그인 |
+| `/dashboard?tab=a\|b` | 대시보드 (A 요약 카드형 / B 오늘의 업무 중심) |
+| `/daily` · `/daily/new` | 일일업무일지 목록 / 작성 |
+| `/weekly?tab=view\|write` | 주간업무보고 조회 / 작성 |
+| `/leave?tab=new\|my\|cal` | 휴가 신청 / 내역 / 팀 캘린더 |
+| `/approve` | 결재함 |
+| `/admin?tab=org\|role\|leave\|approval\|perm` | 관리자 |
+
+## API
+
+| 메서드 | 경로 | 설명 |
+|--------|------|------|
+| GET | `/api/directory?q=` | 부서별 조직도 (인원 선택 모달) |
+| POST | `/api/leave/days` | 휴가 사용일수 계산 (주말 제외 영업일) |
+| GET/POST | `/api/roles` | 권한 조회 / 생성·수정 |
+| DELETE | `/api/roles/{key}` | 권한 삭제 (기본 권한은 거부) |
+| GET | `/api/members` | 사원 목록 |
+| POST | `/api/members/perm` | 사원 권한 부여 |
+| GET | `/api/approval-lines` | 결재선 조회 |
+| POST | `/api/approval-lines/mode` | 결재 단계 수 변경 (none/one/two) |
+| POST | `/api/approval-lines/step` | 단계별 결재자·수신자·참조자 지정 |
+| GET | `/api/ranks/{name}/days` | 직급별 기본 연차 |
+
+대화형 문서: `/docs`
+
+---
+
+## 폰트
+
+원본 시안은 `Plus Jakarta Sans`(라틴) + `Noto Sans KR`(한글)을 썼다.
+요청에 따라 **Pretendard로 전체 교체**했고, 외부 CDN 없이 저장소에 self-host 한다.
+
+- `static/fonts/pretendard/woff2-dynamic-subset/` — `unicode-range`로 나뉜 서브셋 92개
+- 브라우저는 실제 사용된 글자에 해당하는 서브셋만 내려받는다 (대시보드 기준 9개)
+- 라이선스: SIL Open Font License 1.1 (`static/fonts/pretendard/LICENSE.txt`)
+
+이미지는 원본에 한 장도 없었다. 아이콘은 전부 인라인 SVG(`partials/icons.html`),
+아바타는 이름 첫 글자, 배경은 CSS 그라디언트다. 즉 **외부 요청이 0건**이다.
+
+---
+
+## 테스트
+
+서버를 띄운 뒤:
+
+```bash
+npm install          # playwright
+npx playwright install chromium
+npm run test:e2e
+```
+
+| 스크립트 | 검증 내용 |
+|----------|-----------|
+| `test:interact` | 로그인 플로우, 사이드바 접기(쿠키 유지), 사용자 메뉴, 인원 선택 모달(검색·선택·칩 삭제·hidden 동기화), 업무일지 행 추가/삭제, 휴가 일수 계산 |
+| `test:admin` | 권한 생성·수정·삭제(기본 권한 보호), 사원 권한 변경, 직급별 기본 연차 자동 반영, 결재선 단계 전환, 결재자 서버 저장 |
+| `test:responsive` | 1440/1100/820/390px에서 로그인 1↔2단 전환, 모바일 하단 탭바, 가로 오버플로 없음 |
+
+`npm run shots`는 전 화면 스크린샷을 `tests/e2e/__shots__/`에 저장한다.
+
+환경변수: `BASE_URL`(기본 `http://127.0.0.1:8000`), `CHROMIUM_PATH`, `SHOT_DIR`.
+
+---
+
+## 데모 데이터에 관하여
+
+`app/data.py`의 시드와 `app/store.py`의 메모리 저장소는 시안 재현을 위한 것이다.
+서버를 재시작하면 권한·결재선 변경이 초기화된다. 실제 서비스에서는 이 두 모듈이
+DB 레이어로 교체될 자리다. 로그인 역시 자격 증명을 검증하지 않는 데모 수준이다.

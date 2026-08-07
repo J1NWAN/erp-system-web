@@ -1,0 +1,425 @@
+/* ==========================================================================
+   Nexo ERP — 레이아웃
+   앱 셸 · 사이드바 · 헤더 · 메인
+   ========================================================================== */
+
+/* --- 셸 ----------------------------------------------------------------- */
+
+.shell {
+  min-height: 100vh;
+  display: flex;
+  background: var(--bg);
+}
+
+.shell__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 사이드바 ------------------------------------------------------------ */
+
+.side {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--navy);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  transition: width 0.18s ease;
+}
+
+.shell.is-collapsed .side {
+  width: var(--sidebar-w-collapsed);
+}
+
+.side__head {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(242, 242, 243, 0.12);
+  flex-shrink: 0;
+}
+
+/* 브랜드 마크 — 테두리 사각형 안에 채워진 사각형 */
+.mark {
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--primary);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  background: var(--primary);
+}
+
+.mark--lg {
+  width: 26px;
+  height: 26px;
+}
+
+.mark--lg::after {
+  inset: 5px;
+}
+
+.side__brand {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: var(--bg);
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
+.shell.is-collapsed .side__brand {
+  opacity: 0;
+}
+
+.side__nav {
+  flex: 1;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.side__link {
+  width: 100%;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  font-size: 13.5px;
+  font-family: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  background: transparent;
+  color: rgba(246, 245, 251, 0.6);
+  text-decoration: none;
+}
+
+.side__link:hover {
+  background: rgba(242, 242, 243, 0.08);
+  color: var(--bg);
+  text-decoration: none;
+}
+
+.side__link.is-active {
+  background: var(--primary-grad);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow-nav);
+}
+
+.side__link.is-active:hover {
+  background: var(--primary-grad);
+  color: #fff;
+}
+
+.side__link svg {
+  flex-shrink: 0;
+}
+
+.side__label {
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
+.shell.is-collapsed .side__label {
+  opacity: 0;
+}
+
+.side__foot {
+  padding: 10px 8px;
+  border-top: 1px solid rgba(242, 242, 243, 0.12);
+}
+
+.side__toggle {
+  width: 100%;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  color: rgba(242, 242, 243, 0.55);
+  cursor: pointer;
+}
+
+.side__toggle:hover {
+  background: rgba(242, 242, 243, 0.08);
+  color: var(--bg);
+}
+
+.side__toggle svg {
+  flex-shrink: 0;
+}
+
+/* --- 헤더 ---------------------------------------------------------------- */
+
+.head {
+  height: var(--header-h);
+  flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 26px;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.head__title-wrap {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  min-width: 0;
+}
+
+.head__title {
+  font-weight: 700;
+  font-size: 22px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.head__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.head__date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.head__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--primary);
+}
+
+.head__bell {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.head__bell:hover {
+  background: var(--bg);
+}
+
+.head__badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- 사용자 메뉴 ---------------------------------------------------------- */
+
+.user {
+  position: relative;
+  padding-left: 14px;
+  border-left: 1px solid var(--line);
+}
+
+.user__trigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 4px 6px 4px 4px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  text-align: left;
+}
+
+.user__trigger:hover {
+  background: var(--bg);
+}
+
+.user__avatar {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  background: var(--navy);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.user__text {
+  line-height: 1.25;
+  text-align: left;
+}
+
+.user__name {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.user__meta {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-4);
+}
+
+.user__caret {
+  flex: none;
+  transition: transform 0.15s ease;
+}
+
+.user.is-open .user__caret {
+  transform: rotate(180deg);
+}
+
+.user__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.user__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 41;
+  width: 212px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-pop);
+  overflow: hidden;
+}
+
+.user__menu-head {
+  padding: 13px 15px;
+  border-bottom: 1px solid var(--line-4);
+}
+
+.user__menu-name {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.user__menu-mail {
+  font-size: 11.5px;
+  color: var(--ink-4);
+  margin-top: 2px;
+}
+
+.user__menu-body {
+  padding: 6px;
+}
+
+.user__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  height: 36px;
+  padding: 0 10px;
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  color: var(--ink-2);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+}
+
+.user__item:hover {
+  background: var(--bg);
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.user__item--danger {
+  color: var(--danger-soft);
+}
+
+.user__item--danger:hover {
+  background: #fdf3f3;
+  color: var(--danger-soft);
+}
+
+/* --- 메인 ---------------------------------------------------------------- */
+
+.main {
+  flex: 1;
+  padding: 28px 30px 40px;
+  animation: fadeUp 0.24s ease both;
+}
+
+/* 2단 분할 (원본 data-r="split") */
+.split {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 18px;
+}
+
+.split--even {
+  grid-template-columns: 1fr 1fr;
+}
+
+.split--wide {
+  grid-template-columns: 1fr 340px;
+}

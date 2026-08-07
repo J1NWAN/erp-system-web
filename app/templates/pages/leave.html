@@ -1,0 +1,218 @@
+{% extends "layouts/app.html" %}
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/documents.css">
+<link rel="stylesheet" href="/static/css/pages/leave.css">
+{% endblock %}
+
+{% block main %}
+<div class="page">
+
+  <div class="tabs tabs--fit">
+    <a class="tabs__btn {{ 'is-active' if tab == 'new' }}" href="/leave?tab=new">휴가신청</a>
+    <a class="tabs__btn {{ 'is-active' if tab == 'my' }}" href="/leave?tab=my">내 휴가 조회</a>
+    <a class="tabs__btn {{ 'is-active' if tab == 'cal' }}" href="/leave?tab=cal">팀 휴가 캘린더</a>
+  </div>
+
+  {% if tab == 'new' %}
+  {# ---------- 휴가 신청 ---------- #}
+  <div class="split split--leave">
+    <form class="card" method="get" action="/leave" data-leave-form>
+      <input type="hidden" name="tab" value="new">
+
+      <div class="doc__head">
+        <h3 class="doc__title">휴가 신청서</h3>
+      </div>
+
+      <div class="leaveform">
+
+        <div class="leaveform__field">
+          <span class="leaveform__label">휴가 종류</span>
+          <div class="chips">
+            {% for t in leave_types %}
+            <button class="chip {{ 'is-active' if t == leave_type }}" type="button"
+                    data-leave-type="{{ t }}" aria-pressed="{{ 'true' if t == leave_type else 'false' }}">{{ t }}</button>
+            {% endfor %}
+          </div>
+          <input type="hidden" name="type" value="{{ leave_type }}" data-leave-type-input>
+          <div class="leaveform__hint" data-type-hint>{{ type_hint }}</div>
+        </div>
+
+        <div class="leaveform__field">
+          <span class="leaveform__label">사용 구분</span>
+          <div class="chips">
+            {% for d in durations %}
+            <button class="chip {{ 'is-active' if d == duration }}" type="button"
+                    data-duration="{{ d }}" aria-pressed="{{ 'true' if d == duration else 'false' }}">{{ d }}</button>
+            {% endfor %}
+          </div>
+          <input type="hidden" name="duration" value="{{ duration }}" data-duration-input>
+        </div>
+
+        <div class="leaveform__dates">
+          <div>
+            <label class="leaveform__label" for="l-start">시작일</label>
+            <input class="input" type="date" id="l-start" name="start" value="{{ start }}" data-start>
+          </div>
+          <div>
+            <label class="leaveform__label" for="l-end">종료일</label>
+            <input class="input" type="date" id="l-end" name="end" value="{{ end }}"
+                   data-end {{ 'disabled' if end_disabled }}>
+          </div>
+          <div class="daysbox">
+            <div class="daysbox__label">사용 일수</div>
+            <div class="daysbox__value" data-days>{{ days_label }}</div>
+          </div>
+        </div>
+
+        <div class="leaveform__field">
+          <label class="leaveform__label" for="l-reason">휴가 사유</label>
+          <textarea class="textarea" id="l-reason" rows="4" placeholder="사유를 입력하세요"></textarea>
+        </div>
+
+        <div class="leaveform__field">
+          <label class="leaveform__label" for="l-tel">비상 연락처</label>
+          <input class="input leaveform__tel" type="text" id="l-tel" value="010-****-1234">
+        </div>
+
+      </div>
+
+      <div class="doc__foot doc__foot--end">
+        <a class="btn btn--ghost btn--sm" href="/leave?tab=my">취소</a>
+        <button class="btn btn--primary btn--sm doc__submit" type="button"
+                data-toast-msg="휴가 신청을 상신했습니다.">상신</button>
+      </div>
+    </form>
+
+    <div class="stack">
+      <div class="card sidecard">
+        <h4 class="sidecard__title">결재선</h4>
+        <div class="flowline">
+          <div class="flowline__item">
+            <div class="flowline__rail">
+              <span class="flowline__dot flowline__dot--filled"></span>
+              <span class="flowline__bar"></span>
+            </div>
+            <div>
+              <div class="flowline__name">김지현 <span class="flowline__rank">선임</span></div>
+              <div class="flowline__role">신청자</div>
+            </div>
+          </div>
+          <div class="flowline__item">
+            <div class="flowline__rail">
+              <span class="flowline__dot flowline__dot--open"></span>
+            </div>
+            <div>
+              <div class="flowline__name">최민서 <span class="flowline__rank">부장</span></div>
+              <div class="flowline__role">승인권자 · 대기</div>
+            </div>
+          </div>
+        </div>
+        <a class="sidecard__action" href="/admin?tab=approval">결재선 변경</a>
+      </div>
+
+      <div class="card sidecard">
+        <h4 class="sidecard__title">잔여 현황</h4>
+        <div class="balance">
+          <div class="balance__row"><span>연차 총 부여</span><strong>15.0일</strong></div>
+          <div class="balance__row"><span>사용</span><strong>5.5일</strong></div>
+          <div class="balance__row"><span>승인 대기</span><strong>1.0일</strong></div>
+          <div class="balance__row balance__row--total"><span>잔여</span><strong class="balance__left">9.5일</strong></div>
+        </div>
+        <div class="balance__note">기타(연차미반영) 종류는 잔여일수에서 차감되지 않습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  {% elif tab == 'my' %}
+  {# ---------- 내 휴가 조회 ---------- #}
+  <div>
+    <div class="ledger">
+      <div class="ledger__card">
+        <div class="ledger__label">총 부여</div>
+        <div class="ledger__value">15.0<span class="ledger__unit">일</span></div>
+      </div>
+      <div class="ledger__card">
+        <div class="ledger__label">사용</div>
+        <div class="ledger__value">5.5<span class="ledger__unit">일</span></div>
+      </div>
+      <div class="ledger__card">
+        <div class="ledger__label">승인 대기</div>
+        <div class="ledger__value">1.0<span class="ledger__unit">일</span></div>
+      </div>
+      <div class="ledger__card ledger__card--accent">
+        <div class="ledger__label">잔여</div>
+        <div class="ledger__value">9.5<span class="ledger__unit">일</span></div>
+      </div>
+    </div>
+
+    <div class="card card--flush">
+      <div class="card__head">
+        <h3 class="card__title">신청 내역 · 2026년</h3>
+        <a class="btn btn--primary btn--xs2" href="/leave?tab=new">+ 휴가 신청</a>
+      </div>
+      <div class="table-wrap">
+        <div class="thead myleave-grid">
+          <div>기간</div><div>종류</div><div>사유</div><div>일수</div><div>결재자</div><div>상태</div>
+        </div>
+        {% for l in my_leaves %}
+        <div class="trow myleave-grid">
+          <div class="tcell--num tcell--muted">{{ l.period }}</div>
+          <div>{{ l.type }}</div>
+          <div class="tcell--muted tcell--ellipsis">{{ l.reason }}</div>
+          <div>{{ l.days }}</div>
+          <div class="tcell--muted">{{ l.approver }}</div>
+          <div><span class="pill pill--{{ l.state_tone }}">{{ l.state }}</span></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  {# ---------- 팀 휴가 캘린더 ---------- #}
+  <div class="card">
+    <div class="card__head calhead">
+      <div class="calhead__nav">
+        <button class="weeknav__btn" type="button" aria-label="이전 달">‹</button>
+        <h3 class="doc__title">2026년 8월</h3>
+        <button class="weeknav__btn" type="button" aria-label="다음 달">›</button>
+      </div>
+      <div class="calhead__legend">
+        <span><span class="dot dot--full"></span>연차</span>
+        <span><span class="dot dot--half"></span>반차</span>
+        <span><span class="dot dot--etc"></span>기타</span>
+        <label class="sr-only" for="cal-dept">부서</label>
+        <select class="select select--xs" id="cal-dept">
+          <option>개발1팀</option><option>전체 부서</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card__body">
+      <div class="calgrid calgrid--dow">
+        <div class="calgrid__dow calgrid__dow--sun">일</div>
+        <div class="calgrid__dow">월</div>
+        <div class="calgrid__dow">화</div>
+        <div class="calgrid__dow">수</div>
+        <div class="calgrid__dow">목</div>
+        <div class="calgrid__dow">금</div>
+        <div class="calgrid__dow calgrid__dow--sat">토</div>
+      </div>
+      <div class="calgrid">
+        {% for c in cal_cells %}
+        <div class="calcell {{ 'calcell--out' if not c.in_month }} {{ 'calcell--today' if c.today }}">
+          <div class="calcell__num {% if not c.in_month %}calcell__num--out{% elif c.dow == 0 %}calcell__num--sun{% elif c.dow == 6 %}calcell__num--sat{% endif %}">{{ c.num }}</div>
+          {% for e in c.events %}
+          <div class="calevent calevent--{{ e.tone }}">{{ e.label }}</div>
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block page_scripts %}<script src="/static/js/leave.js"></script>{% endblock %}

@@ -1,0 +1,322 @@
+/* ==========================================================================
+   Nexo ERP — 문서 화면 (일일업무일지 · 주간업무보고)
+   목록 필터바 · 그리드 테이블 · 작성 폼
+   ========================================================================== */
+
+/* --- 필터바 -------------------------------------------------------------- */
+
+.filterbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.filterbar__group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.input--sm,
+.select--sm {
+  height: 34px;
+  padding: 0 10px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+  width: auto;
+}
+
+.select--sm {
+  padding-right: 30px;
+}
+
+.filterbar__search {
+  width: 220px;
+}
+
+/* --- 목록 카드 ------------------------------------------------------------ */
+
+.daily-grid {
+  grid-template-columns: 96px 1fr 110px 120px 92px 96px;
+}
+
+.weekly-grid {
+  grid-template-columns: 120px 1fr 130px 100px;
+}
+
+.leave-grid {
+  grid-template-columns: 150px 130px 1fr 80px 120px 90px;
+}
+
+/* --- 페이지네이션 --------------------------------------------------------- */
+
+.pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  font-size: 12px;
+  color: var(--ink-4);
+  border-top: 1px solid var(--line-4);
+}
+
+.pager__nums {
+  display: flex;
+  gap: 4px;
+}
+
+.pager__btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line-3);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  cursor: pointer;
+  color: var(--ink-2);
+}
+
+.pager__btn:hover {
+  background: var(--soft);
+}
+
+.pager__btn.is-active,
+.pager__btn.is-active:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* --- 작성 폼 셸 ----------------------------------------------------------- */
+
+.doc__saved {
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+.doc__body {
+  padding: 22px;
+}
+
+/* --- 제목/수신자 메타 테이블 ------------------------------------------------- */
+
+.metatable {
+  display: grid;
+  grid-template-columns: 96px 1fr;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  margin-bottom: 22px;
+}
+
+.metatable__key {
+  padding: 11px 14px;
+  background: var(--soft);
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.metatable__val {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.metatable__val--chips {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* 문서 폼 안의 칩은 사각형에 가까운 납작한 형태 */
+.tagchip--to,
+.tagchip--cc {
+  height: auto;
+  padding: 4px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  font-weight: 400;
+  gap: 6px;
+}
+
+.tagchip--to {
+  background: var(--soft-2);
+  color: var(--primary-deep);
+}
+
+.tagchip--to .tagchip__x {
+  background: transparent;
+  color: var(--primary-soft);
+  width: auto;
+  height: auto;
+  font-size: 13px;
+}
+
+.tagchip--to .tagchip__x:hover {
+  background: transparent;
+  color: var(--primary);
+}
+
+.tagchip--cc {
+  background: var(--soft);
+  color: var(--ink-2);
+}
+
+.tagchip--cc .tagchip__x {
+  background: transparent;
+  color: var(--gray);
+  width: auto;
+  height: auto;
+  font-size: 13px;
+}
+
+.tagchip--cc .tagchip__x:hover {
+  background: transparent;
+  color: var(--danger-2);
+}
+
+.metatable .pickbox__add {
+  height: 26px;
+  padding: 0 10px;
+  background: var(--surface);
+  border: 1px dashed var(--gray-3);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.metatable .pickbox__add:hover {
+  background: var(--soft);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* --- 섹션 헤더 ------------------------------------------------------------ */
+
+.doc__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.doc__section-head--spaced {
+  margin: 22px 0 10px;
+}
+
+.doc__section-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.btn--xs {
+  height: 30px;
+  padding: 0 12px;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+/* --- 입력형 그리드 테이블 --------------------------------------------------- */
+
+.gridtable {
+  border: 1px solid var(--line);
+  overflow-x: auto;
+}
+
+.gridtable__inner {
+  min-width: 840px;
+}
+
+.gridtable .thead,
+.gridtable .trow {
+  padding: 0;
+  gap: 0;
+  min-width: 0;
+}
+
+.gridtable .thead {
+  height: auto;
+  background: var(--soft);
+  border-bottom: 1px solid var(--line);
+}
+
+.gridtable .thead > div {
+  padding: 10px;
+}
+
+.gridtable .thead > div.tcell--center {
+  padding: 10px 8px;
+}
+
+.gridtable .trow {
+  min-height: 0;
+  border-bottom: 1px solid var(--line-5);
+  align-items: center;
+  background: var(--surface);
+}
+
+.gridtable .trow > div {
+  padding: 6px;
+}
+
+.gridtable__no {
+  padding: 8px !important;
+  font-size: 12px;
+  color: var(--ink-5);
+}
+
+.task-grid {
+  grid-template-columns: 34px 150px 1fr 118px 118px 104px 42px;
+}
+
+.plan-grid {
+  grid-template-columns: 34px 150px 1fr 118px 118px 118px 42px;
+}
+
+.weeklytask-grid {
+  grid-template-columns: 34px 150px 1fr 118px 118px 104px;
+}
+
+.rowdel {
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: 0;
+  color: var(--gray);
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1;
+  border-radius: 6px;
+}
+
+.rowdel:hover {
+  color: var(--danger-2);
+  background: var(--danger-bg);
+}
+
+/* --- 비고 ---------------------------------------------------------------- */
+
+.doc__note {
+  margin-top: 18px;
+}
+
+.doc__note-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+}
+
+.doc__note .textarea {
+  border-color: var(--line-3);
+  border-radius: var(--radius-sm);
+  min-height: 0;
+}

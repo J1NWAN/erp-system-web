@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}로그인 · Nexo ERP{% endblock %}
+{% block styles %}<link rel="stylesheet" href="/static/css/pages/login.css">{% endblock %}
+
+{% block body %}
+<div class="login">
+
+  <div class="login__art">
+    <div class="login__brand">
+      <span class="mark mark--lg"></span>
+      <span class="login__brand-name">Nexo&nbsp;ERP</span>
+    </div>
+
+    <div class="login__copy">
+      <div class="login__kicker">Internal Operations</div>
+      <h1 class="login__headline">업무일지부터 휴가까지,<br>한 곳에서 관리합니다.</h1>
+      <p class="login__lede">일일업무일지 · 주간업무보고 · 휴가신청 · 결재까지 필요한 것만 담은 사내 업무 시스템.</p>
+    </div>
+
+    <div class="login__stats">
+      <div class="login__stat">
+        <div class="login__stat-num">20</div>
+        <div class="login__stat-label">Members</div>
+      </div>
+      <div class="login__stat">
+        <div class="login__stat-num">6</div>
+        <div class="login__stat-label">Modules</div>
+      </div>
+      <div class="login__stat">
+        <div class="login__stat-num">v1.0</div>
+        <div class="login__stat-label">Release</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="login__form">
+    <form class="login__box" method="post" action="/login">
+      <div class="login__eyebrow">Sign in</div>
+      <h2 class="login__title">로그인</h2>
+
+      <label class="field__label" for="username">사번 / 이메일</label>
+      <input class="input login__input" type="text" id="username" name="username"
+             value="kim.jh@nexo.co.kr" autocomplete="username">
+
+      <label class="field__label" for="password">비밀번호</label>
+      <input class="input login__input" type="password" id="password" name="password"
+             value="password" autocomplete="current-password">
+
+      <div class="login__row">
+        <label class="check-label">
+          <input class="checkbox" type="checkbox" name="remember" checked>
+          로그인 상태 유지
+        </label>
+        <a href="#none">비밀번호 찾기</a>
+      </div>
+
+      <button class="btn btn--primary btn--lg btn--block" type="submit">로그인</button>
+
+      <div class="login__help">
+        계정 문의는 경영지원팀 내선 <strong>302</strong><br>
+        시스템 문의는 IT 인프라팀 내선 <strong>341</strong>
+      </div>
+    </form>
+  </div>
+
+</div>
+{% endblock %}

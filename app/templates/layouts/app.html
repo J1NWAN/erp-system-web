@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }} · Nexo ERP{% endblock %}
+
+{% block body %}
+<div class="shell {{ 'is-collapsed' if collapsed }}" data-shell>
+  {% include "partials/sidebar.html" %}
+
+  <div class="shell__body">
+    {% include "partials/header.html" %}
+
+    <main class="main">
+      {% block main %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+{% include "partials/picker_modal.html" %}
+<div class="toast" data-toast role="status" aria-live="polite"></div>
+{% block modals %}{% endblock %}
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/app.js"></script>
+{% block page_scripts %}{% endblock %}
+{% endblock %}

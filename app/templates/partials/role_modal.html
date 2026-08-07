@@ -1,0 +1,37 @@
+{# 권한 추가 · 수정 모달 #}
+<div class="modal" data-role-modal hidden>
+  <div class="modal__scrim" data-action="close-role"></div>
+
+  <div class="modal__panel">
+    <div class="modal__head picker__head-row modal__head--split">
+      <div>
+        <h3 class="modal__title" data-role-title>권한 추가</h3>
+        <p class="modal__hint">권한명을 입력하고 접근 가능한 메뉴를 선택하세요</p>
+      </div>
+      <button class="picker__x" type="button" data-action="close-role" aria-label="닫기">×</button>
+    </div>
+
+    <div class="modal__body modalform">
+      <div>
+        <label class="modalform__label" for="role-name">권한명</label>
+        <input class="input" type="text" id="role-name" placeholder="예: 팀장" data-role-name>
+      </div>
+
+      <div>
+        <span class="modalform__label">접근 가능 메뉴</span>
+        <div class="checkcards">
+          {% for m in menu_defs %}
+          <button class="checkcard" type="button" data-role-menu="{{ m.key }}" aria-pressed="false">
+            <span class="checkcard__box">✓</span>{{ m.label }}
+          </button>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="modal__foot modal__foot--end">
+      <button class="btn btn--ghost" type="button" data-action="close-role">취소</button>
+      <button class="btn btn--primary" type="button" data-role-save>저장</button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,238 @@
+{% extends "layouts/app.html" %}
+{% block styles %}
+<link rel="stylesheet" href="/static/css/pages/documents.css">
+<link rel="stylesheet" href="/static/css/pages/admin.css">
+{% endblock %}
+
+{% block main %}
+<div class="page">
+
+  <div class="tabs tabs--fit tabs--wrap">
+    <a class="tabs__btn {{ 'is-active' if tab == 'org' }}" href="/admin?tab=org">조직 · 사원</a>
+    <a class="tabs__btn {{ 'is-active' if tab == 'role' }}" href="/admin?tab=role">직급 · 역할</a>
+    <a class="tabs__btn {{ 'is-active' if tab == 'leave' }}" href="/admin?tab=leave">휴가 종류</a>
+    <a class="tabs__btn {{ 'is-active' if tab == 'approval' }}" href="/admin?tab=approval">결재선</a>
+    <a class="tabs__btn {{ 'is-active' if tab == 'perm' }}" href="/admin?tab=perm">권한 관리</a>
+  </div>
+
+  {# ---------- 조직 · 사원 ---------- #}
+  {% if tab == 'org' %}
+  <div class="split split--org">
+    <div class="card orgtree">
+      <h4 class="sidecard__title">조직도</h4>
+      <div class="orgtree__body">
+        <div class="orgtree__root">넥소 주식회사</div>
+        <div class="orgtree__branch">
+          <div class="orgtree__div">개발본부</div>
+          <div class="orgtree__team">개발1팀 · 6</div>
+          <div class="orgtree__team">개발2팀 · 4</div>
+          <div class="orgtree__dept">경영지원팀 · 5</div>
+          <div class="orgtree__dept">영업팀 · 5</div>
+        </div>
+      </div>
+      <button class="dashbtn" type="button">+ 부서 추가</button>
+    </div>
+
+    <div class="card card--flush">
+      <div class="card__head">
+        <h3 class="card__title">개발1팀 · 사원 {{ members | length }}명</h3>
+        <button class="btn btn--primary btn--xs2" type="button" data-emp-new>+ 사원 등록</button>
+      </div>
+      <div class="table-wrap">
+        <div class="thead member-grid">
+          <div>사번</div><div>이름</div><div>직급</div><div>입사일</div><div>연차</div><div>권한</div>
+        </div>
+        {% for m in members %}
+        <button class="trow member-grid is-clickable" type="button"
+                data-emp-edit
+                data-id="{{ m.id }}" data-name="{{ m.name }}" data-rank="{{ m.rank }}"
+                data-dept="{{ m.dept }}" data-joined="{{ m.joined }}" data-email="{{ m.email }}"
+                data-leave="{{ m.leave | replace('일','') }}" data-role="{{ m.role_key }}"
+                data-login="{{ m.login_id }}">
+          <div class="tcell--num tcell--dim">{{ m.id }}</div>
+          <div class="member__name">{{ m.name }}</div>
+          <div class="tcell--muted">{{ m.rank }}</div>
+          <div class="tcell--num tcell--dim">{{ m.joined }}</div>
+          <div class="tcell--muted">{{ m.leave }}</div>
+          <div><span class="pill pill--{{ m.role_tone }}">{{ m.role }}</span></div>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  {# ---------- 직급 · 역할 ---------- #}
+  {% elif tab == 'role' %}
+  <div class="card card--flush panel--md">
+    <div class="panel__head">
+      <h3 class="card__title">직급 · 역할 관리</h3>
+      <p class="panel__desc">직급 이름은 관리자가 자유롭게 변경할 수 있으며 조직도 · 결재선에 즉시 반영됩니다.</p>
+    </div>
+    <div class="table-wrap">
+      <div class="thead rank-grid">
+        <div>순서</div><div>직급명</div><div>기본 연차</div><div>권한</div><div></div>
+      </div>
+      {% for r in ranks %}
+      <div class="trow rank-grid rank-grid--row">
+        <div class="tcell--center gridtable__no">{{ r.no }}</div>
+        <div><input class="table-input" type="text" value="{{ r.name }}" aria-label="직급명"></div>
+        <div><input class="table-input" type="text" value="{{ r.days }}" aria-label="기본 연차"></div>
+        <div>
+          <select class="table-input" aria-label="권한">
+            <option {{ 'selected' if r.perm == '일반' }}>일반</option>
+            <option {{ 'selected' if r.perm == '팀 승인' }}>팀 승인</option>
+            <option {{ 'selected' if r.perm == '전체 관리' }}>전체 관리</option>
+          </select>
+        </div>
+        <div class="tcell--center"><button class="rowdel" type="button" aria-label="직급 삭제">×</button></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="panel__foot">
+      <button class="dashbtn dashbtn--inline" type="button">+ 직급 추가</button>
+      <button class="btn btn--primary btn--sm2" type="button" data-toast-msg="직급 설정을 저장했습니다.">저장</button>
+    </div>
+  </div>
+
+  {# ---------- 휴가 종류 ---------- #}
+  {% elif tab == 'leave' %}
+  <div class="card card--flush panel--lg">
+    <div class="panel__head">
+      <h3 class="card__title">휴가 종류 관리</h3>
+      <p class="panel__desc">종류를 추가하거나 이름 · 차감 방식 · 반차 허용 여부를 설정합니다.</p>
+    </div>
+    <div class="table-wrap">
+      <div class="thead leavecfg-grid">
+        <div>종류명</div><div>연차 차감</div><div>반차 허용</div><div>증빙 필요</div><div></div>
+      </div>
+      {% for c in leave_config %}
+      <div class="trow leavecfg-grid rank-grid--row">
+        <div><input class="table-input" type="text" value="{{ c.name }}" aria-label="종류명"></div>
+        <div>
+          <select class="table-input" aria-label="연차 차감">
+            <option {{ 'selected' if c.deduct == '차감' }}>차감</option>
+            <option {{ 'selected' if c.deduct == '미차감' }}>미차감</option>
+          </select>
+        </div>
+        <div class="tcell--center">
+          <input class="checkbox checkbox--md" type="checkbox" {{ 'checked' if c.half }} aria-label="{{ c.name }} 반차 허용">
+        </div>
+        <div class="tcell--center">
+          <input class="checkbox checkbox--md" type="checkbox" {{ 'checked' if c.proof }} aria-label="{{ c.name }} 증빙 필요">
+        </div>
+        <div class="tcell--center"><button class="rowdel" type="button" aria-label="휴가 종류 삭제">×</button></div>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="panel__foot">
+      <button class="dashbtn dashbtn--inline" type="button">+ 휴가 종류 추가</button>
+      <button class="btn btn--primary btn--sm2" type="button" data-toast-msg="휴가 종류를 저장했습니다.">저장</button>
+    </div>
+  </div>
+
+  {# ---------- 결재선 ---------- #}
+  {% elif tab == 'approval' %}
+  <div class="card panel--md">
+    <div class="panel__head">
+      <h3 class="card__title">결재선 설정</h3>
+      <p class="panel__desc">문서 종류별로 결재선 미사용 · 1단계 · 2단계를 선택하고, 단계별 결재자 · 수신자 · 참조자를 지정합니다.</p>
+    </div>
+
+    <div class="lines" data-lines>
+      {% for a in approval_lines %}
+      <div class="line" data-line="{{ a.index }}">
+        <div class="line__head">
+          <strong class="line__doc">{{ a.doc }}</strong>
+          <div class="seg">
+            <button class="seg__btn {{ 'is-on' if a.mode == 'none' }}" type="button" data-line-mode="none">결재선 미사용</button>
+            <button class="seg__btn {{ 'is-on' if a.mode == 'one' }}" type="button" data-line-mode="one">1단계</button>
+            <button class="seg__btn {{ 'is-on' if a.mode == 'two' }}" type="button" data-line-mode="two">2단계</button>
+          </div>
+        </div>
+
+        {% if a.is_none %}
+        <div class="line__empty">결재선을 사용하지 않습니다. 제출 즉시 처리 완료됩니다.</div>
+        {% else %}
+        <div class="line__steps">
+          <div class="line__flow">{{ a.flow }}</div>
+          {% for st in a.step_cards %}
+          <div class="step">
+            <div class="step__head">
+              <span class="step__no">{{ st.no }}</span>
+              <strong class="step__title">{{ st.title }}</strong>
+              <span class="step__rule">{{ st.rule }}</span>
+            </div>
+            <div class="step__body">
+              {% for field, label, chips, mode in [
+                ('ap', '결재자', st.ap_chips, 'ap'),
+                ('to', '수신자', st.to_chips, 'lto'),
+                ('cc', '참조자', st.cc_chips, 'lcc')
+              ] %}
+              <div class="step__key">{{ label }}</div>
+              <div class="step__val" data-pickbox
+                   id="line{{ a.index }}-{{ st.no }}-{{ field }}"
+                   data-line-index="{{ a.index }}" data-step="{{ st.no - 1 }}" data-field="{{ field }}">
+                {% for c in chips %}
+                <span class="tagchip tagchip--{{ 'to' if field == 'ap' else 'cc' }}" data-name="{{ c.name }}">{{ c.label }}<button class="tagchip__x" type="button" data-action="remove-chip" aria-label="{{ c.label }} 제거">×</button></span>
+                {% endfor %}
+                <button class="pickbox__add" type="button"
+                        data-picker-open="#line{{ a.index }}-{{ st.no }}-{{ field }}"
+                        data-picker-mode="{{ mode }}">+ {{ label }} 추가</button>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="panel__foot panel__foot--end">
+      <button class="btn btn--primary btn--sm2" type="button" data-toast-msg="결재선 설정을 저장했습니다.">저장</button>
+    </div>
+  </div>
+
+  {# ---------- 권한 관리 ---------- #}
+  {% else %}
+  <div class="card card--flush panel--xl">
+    <div class="card__head">
+      <div>
+        <h3 class="card__title">권한 관리</h3>
+        <p class="panel__desc">권한을 생성하고, 각 권한이 접근할 수 있는 메뉴를 선택합니다. 사원별 권한 부여는 사원 등록 · 수정 팝업에서 합니다.</p>
+      </div>
+      <button class="btn btn--primary btn--xs2" type="button" data-role-new
+              data-next-key="{{ next_role_key }}">+ 권한 추가</button>
+    </div>
+    <div class="table-wrap">
+      <div class="thead permrole-grid">
+        <div>권한명</div><div>접근 가능 메뉴</div><div>부여 사원</div><div></div>
+      </div>
+      {% for r in perm_roles %}
+      <div class="trow permrole-grid is-clickable" data-role-row
+           data-key="{{ r.key }}" data-name="{{ r.name }}"
+           data-menus="{{ r.menus | tojson | forceescape }}">
+        <div class="permrole__name">{{ r.name }}</div>
+        <div class="permrole__menus">{{ r.menu_list }} <span class="permrole__count">({{ r.allowed_count }}개)</span></div>
+        <div class="tcell--dim">{{ r.member_count }}명</div>
+        <div class="tcell--right">
+          {% if r.can_delete %}
+          <button class="minibtn" type="button" data-role-delete="{{ r.key }}">삭제</button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block modals %}
+{% include "partials/role_modal.html" %}
+{% include "partials/employee_modal.html" %}
+{% endblock %}
+
+{% block page_scripts %}<script src="/static/js/admin.js"></script>{% endblock %}

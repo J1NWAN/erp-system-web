@@ -1,0 +1,137 @@
+/* ==========================================================================
+   Nexo ERP — 로그인 화면
+   ========================================================================== */
+
+.login {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  background: var(--bg);
+}
+
+/* --- 좌측 소개 영역 -------------------------------------------------------- */
+
+.login__art {
+  background: linear-gradient(155deg, #221c46 0%, #17142f 55%, #120f26 100%);
+  color: var(--bg);
+  padding: 56px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.login__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login__brand-name {
+  font-weight: 600;
+  font-size: 19px;
+  letter-spacing: 0.02em;
+}
+
+.login__copy {
+  max-width: 460px;
+}
+
+.login__kicker {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--primary-soft);
+  margin-bottom: 18px;
+}
+
+.login__headline {
+  font-weight: 700;
+  font-size: 44px;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 18px;
+}
+
+.login__lede {
+  margin: 0;
+  color: rgba(242, 242, 243, 0.62);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.login__stats {
+  display: flex;
+  gap: 36px;
+  border-top: 1px solid rgba(242, 242, 243, 0.16);
+  padding-top: 20px;
+}
+
+.login__stat-num {
+  font-size: 26px;
+  font-weight: 600;
+}
+
+.login__stat-label {
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: rgba(242, 242, 243, 0.5);
+}
+
+/* --- 우측 폼 영역 ---------------------------------------------------------- */
+
+.login__form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.login__box {
+  width: 100%;
+  max-width: 352px;
+}
+
+.login__eyebrow {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-4);
+  margin-bottom: 8px;
+}
+
+.login__title {
+  font-weight: 700;
+  font-size: 30px;
+  margin: 0 0 28px;
+}
+
+.login__input {
+  height: 46px;
+  padding: 0 14px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.login__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.login__row a {
+  font-size: 13px;
+}
+
+.login__help {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+  color: var(--ink-4);
+  line-height: 1.7;
+}
+
+.login__help strong {
+  color: var(--ink);
+}

@@ -1,0 +1,140 @@
+{% extends "layouts/app.html" %}
+{% block styles %}<link rel="stylesheet" href="/static/css/pages/documents.css">{% endblock %}
+
+{% block main %}
+<div class="page page--narrow">
+  <form class="card" method="get" action="/daily" data-doc-form>
+
+    <div class="doc__head">
+      <h3 class="doc__title">일일업무일지 · 2026-08-05 (수)</h3>
+      <span class="doc__saved">임시저장 10:24</span>
+    </div>
+
+    <div class="doc__body">
+
+      {# 제목 · 수신자 · 참조자 #}
+      <div class="metatable">
+        <div class="metatable__key">제목</div>
+        <div class="metatable__val">
+          <label class="sr-only" for="doc-title">제목</label>
+          <input class="table-input" type="text" id="doc-title" name="title"
+                 value="ERP 휴가모듈 API 연동 및 QA 대응">
+        </div>
+
+        <div class="metatable__key">수신자</div>
+        <div class="metatable__val metatable__val--chips" data-pickbox id="box-to">
+          {% for c in to_chips %}
+          <span class="tagchip tagchip--to" data-name="{{ c.name }}">{{ c.label }}<button class="tagchip__x" type="button" data-action="remove-chip" aria-label="{{ c.label }} 제거">×</button></span>
+          {% endfor %}
+          <button class="pickbox__add" type="button"
+                  data-picker-open="#box-to" data-picker-mode="to">+ 사원 선택</button>
+          <input type="hidden" name="to" value="{{ to_chips | map(attribute='name') | join(',') }}">
+        </div>
+
+        <div class="metatable__key">참조자</div>
+        <div class="metatable__val metatable__val--chips" data-pickbox id="box-cc">
+          {% for c in cc_chips %}
+          <span class="tagchip tagchip--cc" data-name="{{ c.name }}">{{ c.label }}<button class="tagchip__x" type="button" data-action="remove-chip" aria-label="{{ c.label }} 제거">×</button></span>
+          {% endfor %}
+          <button class="pickbox__add" type="button"
+                  data-picker-open="#box-cc" data-picker-mode="cc">+ 추가</button>
+          <input type="hidden" name="cc" value="{{ cc_chips | map(attribute='name') | join(',') }}">
+        </div>
+      </div>
+
+      {# 업무 내용 #}
+      <div class="doc__section-head">
+        <h4 class="doc__section-title">업무 내용</h4>
+        <button class="btn btn--ghost btn--xs" type="button" data-add-row="task">+ 행 추가</button>
+      </div>
+
+      <div class="gridtable">
+        <div class="gridtable__inner">
+          <div class="thead task-grid">
+            <div class="tcell--center">No</div>
+            <div>시스템</div>
+            <div>내용</div>
+            <div>요청 접수일</div>
+            <div>업무 시작일</div>
+            <div>완료여부</div>
+            <div></div>
+          </div>
+          <div data-rows="task">
+            {% for t in task_rows %}
+            <div class="trow task-grid" data-row>
+              <div class="tcell--center gridtable__no">{{ t.no }}</div>
+              <div><input class="table-input" type="text" value="{{ t.system }}" aria-label="시스템"></div>
+              <div><input class="table-input" type="text" value="{{ t.content }}" aria-label="내용"></div>
+              <div><input class="table-input" type="date" value="{{ t.received }}" aria-label="요청 접수일"></div>
+              <div><input class="table-input" type="date" value="{{ t.started }}" aria-label="업무 시작일"></div>
+              <div>
+                <select class="table-input" aria-label="완료여부">
+                  <option {{ 'selected' if t.done == '완료' }}>완료</option>
+                  <option {{ 'selected' if t.done == '진행중' }}>진행중</option>
+                  <option {{ 'selected' if t.done == '보류' }}>보류</option>
+                </select>
+              </div>
+              <div class="tcell--center">
+                <button class="rowdel" type="button" data-del-row aria-label="행 삭제">×</button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      {# 진행 및 예정사항 #}
+      <div class="doc__section-head doc__section-head--spaced">
+        <h4 class="doc__section-title">진행 및 예정사항</h4>
+        <button class="btn btn--ghost btn--xs" type="button" data-add-row="plan">+ 행 추가</button>
+      </div>
+
+      <div class="gridtable">
+        <div class="gridtable__inner">
+          <div class="thead plan-grid">
+            <div class="tcell--center">No</div>
+            <div>시스템</div>
+            <div>내용</div>
+            <div>요청 접수일</div>
+            <div>시작 예정일</div>
+            <div>종료 예정일</div>
+            <div></div>
+          </div>
+          <div data-rows="plan">
+            {% for p in plan_rows %}
+            <div class="trow plan-grid" data-row>
+              <div class="tcell--center gridtable__no">{{ p.no }}</div>
+              <div><input class="table-input" type="text" value="{{ p.system }}" aria-label="시스템"></div>
+              <div><input class="table-input" type="text" value="{{ p.content }}" aria-label="내용"></div>
+              <div><input class="table-input" type="date" value="{{ p.received }}" aria-label="요청 접수일"></div>
+              <div><input class="table-input" type="date" value="{{ p.plan_start }}" aria-label="시작 예정일"></div>
+              <div><input class="table-input" type="date" value="{{ p.plan_end }}" aria-label="종료 예정일"></div>
+              <div class="tcell--center">
+                <button class="rowdel" type="button" data-del-row aria-label="행 삭제">×</button>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="doc__note">
+        <label class="doc__note-label" for="doc-note">특이사항 / 익일 계획</label>
+        <textarea class="textarea" id="doc-note" rows="3">휴가 신청 API 스펙 확정 필요 (박서준 책임 확인 요청)</textarea>
+      </div>
+
+    </div>
+
+    <div class="doc__foot">
+      <a class="btn btn--ghost btn--sm" href="/daily">목록</a>
+      <div class="btn-row">
+        <button class="btn btn--ghost btn--sm" type="button" data-toast-msg="임시저장했습니다.">임시저장</button>
+        <button class="btn btn--primary btn--sm doc__submit" type="submit">제출</button>
+      </div>
+    </div>
+
+  </form>
+</div>
+{% endblock %}
+
+{% block page_scripts %}<script src="/static/js/doc-form.js"></script>{% endblock %}

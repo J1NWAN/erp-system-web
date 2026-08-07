@@ -1,0 +1,1167 @@
+/* ==========================================================================
+   Nexo ERP — 공통 컴포넌트
+   카드 · 배지 · 탭 · 칩 · 버튼 · 테이블 · 폼 · 모달
+   ========================================================================== */
+
+/* --- 페이지 컨테이너 ------------------------------------------------------ */
+
+.page {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.page--narrow {
+  max-width: 1080px;
+}
+
+.page--wide {
+  max-width: 1320px;
+}
+
+.page__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.page__greeting {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.page__greeting strong {
+  color: var(--ink);
+}
+
+.page__greeting .accent {
+  color: var(--primary);
+}
+
+/* --- 카드 ---------------------------------------------------------------- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+.card__head {
+  padding: 14px 18px;
+  border-bottom: 1px solid #efedf8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.card__title {
+  font-size: 17px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.card__body {
+  padding: 16px 18px;
+}
+
+.card__list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- 통계 카드 ------------------------------------------------------------ */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(232px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.stat {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 16px 18px;
+  border-left: 3px solid var(--gray);
+}
+
+.stat--danger {
+  border-left-color: var(--danger-2);
+}
+
+.stat--primary {
+  border-left-color: var(--primary);
+}
+
+.stat--warn {
+  border-left-color: #f0a04b;
+}
+
+.stat--muted {
+  border-left-color: var(--gray);
+}
+
+.stat__label {
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--ink-4);
+  margin-bottom: 10px;
+}
+
+.stat__value {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat__unit {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-4);
+}
+
+.stat__note {
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.stat__bar {
+  height: 4px;
+  background: var(--line);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.stat__bar-fill {
+  height: 100%;
+  background: var(--primary);
+}
+
+/* --- 링크 버튼 ------------------------------------------------------------ */
+
+.linkbtn {
+  font-size: 12px;
+  color: var(--primary);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  text-decoration: none;
+}
+
+.linkbtn:hover {
+  color: var(--primary-dark);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* --- 배지 (pill) ---------------------------------------------------------- */
+
+.pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-weight: 600;
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.pill--primary {
+  background: var(--soft-2);
+  color: var(--primary-deep);
+}
+
+.pill--muted {
+  background: var(--soft);
+  color: var(--ink-3);
+}
+
+.pill--danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* --- 탭 (세그먼트 버튼 그룹) ----------------------------------------------- */
+
+.tabs {
+  display: flex;
+  border: 1px solid #e0ddef;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.tabs__btn {
+  height: 34px;
+  padding: 0 16px;
+  border: 0;
+  cursor: pointer;
+  font-size: 12.5px;
+  font-weight: 600;
+  font-family: inherit;
+  white-space: nowrap;
+  background: var(--surface);
+  color: var(--ink-3);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+
+.tabs__btn:hover {
+  background: var(--soft);
+  color: var(--ink-3);
+  text-decoration: none;
+}
+
+.tabs__btn.is-active,
+.tabs__btn.is-active:hover {
+  background: var(--primary);
+  color: var(--bg);
+  font-weight: 600;
+}
+
+.tabs__label {
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--ink-4);
+  white-space: nowrap;
+  flex: none;
+}
+
+/* 내용 폭에 맞춰 줄어드는 탭 바 (휴가 · 관리자 화면) */
+.tabs--fit {
+  width: fit-content;
+  margin-bottom: 14px;
+}
+
+/* --- 칩 (필터 선택) -------------------------------------------------------- */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  height: 36px;
+  padding: 0 15px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--ink-2);
+  border: 1px solid var(--line-2);
+}
+
+.chip:hover {
+  border-color: var(--primary-soft);
+}
+
+.chip.is-active,
+.chip.is-active:hover {
+  background: var(--primary);
+  color: var(--bg);
+  border-color: var(--primary-dark);
+}
+
+/* --- 수신자/참조자 태그 칩 -------------------------------------------------- */
+
+.tagchip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px 0 11px;
+  border-radius: var(--radius-pill);
+  background: var(--soft-2);
+  color: var(--primary-deep);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.tagchip__x {
+  width: 17px;
+  height: 17px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(109, 90, 230, 0.16);
+  color: var(--primary-deep);
+  font-size: 11px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tagchip__x:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* --- 버튼 ---------------------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn:hover {
+  text-decoration: none;
+}
+
+.btn--primary {
+  background: var(--primary-grad);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+
+.btn--primary:hover {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.btn--ghost {
+  background: var(--surface);
+  color: var(--ink-2);
+  border-color: var(--line-2);
+}
+
+.btn--ghost:hover {
+  background: var(--soft);
+  color: var(--ink-2);
+}
+
+.btn--danger {
+  background: var(--surface);
+  color: var(--danger);
+  border-color: #f0d3d9;
+}
+
+.btn--danger:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.btn--lg {
+  height: 48px;
+  font-size: 15px;
+  border-radius: var(--radius-sm);
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.btn--sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: 12.5px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* --- 테이블 -------------------------------------------------------------- */
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.thead,
+.trow {
+  display: grid;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+}
+
+.thead {
+  height: 42px;
+  background: var(--soft);
+  border-bottom: 1px solid var(--line-5);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  color: var(--ink-4);
+  font-weight: 600;
+}
+
+.trow {
+  min-height: 48px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-4);
+  font-size: 13px;
+  color: var(--ink-2);
+  background: var(--surface);
+  text-decoration: none;
+}
+
+a.trow:hover,
+.trow.is-clickable:hover {
+  background: var(--soft-6);
+  color: var(--ink-2);
+  text-decoration: none;
+}
+
+.trow.is-clickable {
+  cursor: pointer;
+}
+
+.trow:last-child {
+  border-bottom: 0;
+}
+
+.tcell--muted {
+  color: var(--ink-4);
+}
+
+.tcell--num {
+  font-variant-numeric: tabular-nums;
+}
+
+.tcell--center {
+  text-align: center;
+}
+
+.tcell--right {
+  text-align: right;
+}
+
+.tcell--ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 입력형 테이블 (업무일지 작성) */
+.table-input {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line-3);
+  border-radius: 9px;
+  background: var(--surface);
+  font-size: 12.5px;
+  color: var(--ink-2);
+}
+
+.table-input:focus {
+  border-color: var(--primary);
+}
+
+/* --- 폼 ------------------------------------------------------------------ */
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field__label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--ink-4);
+  margin-bottom: 6px;
+}
+
+.field__hint {
+  font-size: 11.5px;
+  color: var(--ink-4);
+  margin-top: 6px;
+}
+
+.input,
+.select,
+.textarea {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.input:disabled,
+.select:disabled,
+.input[readonly] {
+  background: var(--soft);
+  color: var(--ink-5);
+  cursor: not-allowed;
+}
+
+.textarea {
+  height: auto;
+  min-height: 96px;
+  padding: 11px 12px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a5a1b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 32px;
+}
+
+.checkbox {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--primary);
+}
+
+.check-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink-3);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid--2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+.form-grid--3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* --- 선택 필드 (수신자 박스) ------------------------------------------------ */
+
+.pickbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  min-height: 44px;
+  padding: 7px 9px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.pickbox__add {
+  height: 28px;
+  padding: 0 12px;
+  border: 1px dashed var(--gray-4);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--ink-4);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pickbox__add:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+/* --- 섹션 헤더 ------------------------------------------------------------ */
+
+.section {
+  margin-bottom: 18px;
+}
+
+.section__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.section__title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.section__sub {
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+/* --- 모달 ---------------------------------------------------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(23, 20, 50, 0.42);
+  backdrop-filter: blur(2px);
+}
+
+.modal__panel {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: 20px;
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+  animation: fadeUp 0.18s ease both;
+}
+
+.modal__panel--wide {
+  max-width: 620px;
+}
+
+.modal__head {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--line-4);
+  flex-shrink: 0;
+}
+
+.modal__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.modal__hint {
+  font-size: 12.5px;
+  color: var(--ink-4);
+  margin-top: 4px;
+}
+
+.modal__body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal__foot {
+  padding: 14px 22px;
+  border-top: 1px solid var(--line-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
+  background: var(--soft-4);
+}
+
+.modal__count {
+  font-size: 12.5px;
+  color: var(--ink-4);
+}
+
+.modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--ink-4);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.modal__close:hover {
+  background: var(--soft);
+  color: var(--ink);
+}
+
+/* --- 인원 선택기 ---------------------------------------------------------- */
+
+.picker__search {
+  margin-bottom: 14px;
+}
+
+.picker__group {
+  margin-bottom: 14px;
+}
+
+.picker__dept {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  color: var(--ink-4);
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.picker__row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.picker__row:hover {
+  background: var(--soft);
+}
+
+.picker__row.is-on,
+.picker__row.is-on:hover {
+  background: var(--soft-5);
+}
+
+.picker__avatar {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  background: var(--soft-6);
+  color: var(--ink-3);
+}
+
+.picker__row.is-on .picker__avatar {
+  background: var(--primary);
+  color: #fff;
+}
+
+.picker__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.picker__name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.picker__mail {
+  font-size: 11.5px;
+  color: var(--ink-4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.picker__check {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  border: 1px solid var(--line-2);
+  color: transparent;
+}
+
+.picker__row.is-on .picker__check {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.picker__empty {
+  padding: 32px 0;
+  text-align: center;
+  color: var(--ink-4);
+  font-size: 13px;
+}
+
+/* --- 체크 옵션 카드 (권한 메뉴) --------------------------------------------- */
+
+.checkcard {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-6);
+  background: var(--surface);
+  border-radius: 11px;
+  font-size: 13px;
+  color: var(--ink-4);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.checkcard.is-on {
+  border-color: #ddd6f8;
+  background: var(--soft-3);
+  color: var(--ink-2);
+}
+
+.checkcard__box {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  background: var(--surface);
+  color: transparent;
+  border: 1px solid var(--gray-4);
+}
+
+.checkcard.is-on .checkcard__box {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+/* --- 라디오 옵션 카드 (권한 선택) -------------------------------------------- */
+
+.radiocard {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 13px;
+  border: 1px solid var(--line-3);
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.radiocard.is-on {
+  border-color: var(--primary);
+  background: var(--soft-3);
+}
+
+.radiocard__dot {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  margin-top: 2px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gray-3);
+  background: var(--surface);
+}
+
+.radiocard.is-on .radiocard__dot {
+  border: 5px solid var(--primary);
+}
+
+.radiocard__name {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.radiocard__scope {
+  font-size: 11.5px;
+  color: var(--ink-4);
+  margin-top: 2px;
+}
+
+/* --- 범례 점 (대시보드 · 캘린더 공용) ----------------------------------------- */
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 5px;
+}
+
+/* --- 빈 상태 -------------------------------------------------------------- */
+
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--ink-4);
+  font-size: 13px;
+}
+
+/* --- 알림 배너 ------------------------------------------------------------ */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%) translateY(8px);
+  z-index: 80;
+  padding: 11px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--navy);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: var(--shadow-pop);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.toast.is-on {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* --- 인원 선택 모달 세부 ---------------------------------------------------- */
+
+.picker__panel {
+  max-height: 82vh;
+}
+
+.picker__head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #efedf8;
+}
+
+.picker__head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.picker__panel .modal__title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 2px;
+}
+
+.picker__x {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: var(--soft);
+  color: var(--ink-3);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.picker__x:hover {
+  background: var(--line);
+}
+
+.picker__input {
+  height: 42px;
+  padding: 0 14px;
+  background: var(--soft-4);
+  border-color: var(--line-3);
+  border-radius: var(--radius-md);
+}
+
+.picker__body {
+  padding: 8px 12px;
+}
+
+.picker__dept {
+  padding: 10px 12px 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ink-5);
+  margin: 0;
+}
+
+.picker__rank {
+  color: var(--ink-5);
+  font-weight: 500;
+}
+
+.picker__panel .modal__foot {
+  padding: 14px 20px;
+  border-top: 1px solid #efedf8;
+  background: #fbfaff;
+}
+
+.modal__count strong {
+  color: var(--primary);
+}
+
+.picker__confirm {
+  padding: 0 22px;
+}
+
+/* --- 여러 화면이 공유하는 프리미티브 ------------------------------------------
+   개별 페이지 CSS에 두면 해당 파일을 불러오지 않는 화면에서 스타일이 빠진다. */
+
+.card--flush {
+  overflow: hidden;
+}
+
+.doc__head {
+  padding: 16px 22px;
+  border-bottom: 1px solid #efedf8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.doc__title {
+  font-size: 19px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.doc__foot {
+  padding: 14px 22px;
+  border-top: 1px solid #efedf8;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.doc__submit {
+  padding: 0 20px;
+}
+
+.weeknav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-3);
+}
+
+.weeknav__btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #e0ddef;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--ink-3);
+  line-height: 1;
+}
+
+.weeknav__label {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.card__note {
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+.tcell--dim {
+  color: var(--ink-4);
+}
+
+.doc__foot--end {
+  justify-content: flex-end;
+}
+
+.sidecard {
+  padding: 18px;
+}
+
+.sidecard__title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 12px;
+}
+
+.sidecard__action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  width: 100%;
+  height: 32px;
+  background: var(--surface);
+  border: 1px dashed var(--gray-3);
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  color: var(--ink-3);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn--xs2 {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.weeknav__btn:hover {
+  background: var(--soft);
+  color: var(--primary);
+}
+
+.sidecard__action:hover {
+  background: var(--soft);
+  color: var(--primary);
+  border-color: var(--primary);
+  text-decoration: none;
+}

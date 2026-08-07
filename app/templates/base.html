@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Nexo ERP{% endblock %}</title>
+  <meta name="description" content="Nexo ERP — 일일업무일지 · 주간업무보고 · 휴가신청 · 결재를 한 곳에서 관리하는 사내 업무 시스템">
+  <meta name="color-scheme" content="light">
+
+  <link rel="stylesheet" href="/static/css/pretendard.css">
+  <link rel="stylesheet" href="/static/css/base.css">
+  <link rel="stylesheet" href="/static/css/layout.css">
+  <link rel="stylesheet" href="/static/css/components.css">
+  {% block styles %}{% endblock %}
+  <link rel="stylesheet" href="/static/css/responsive.css">
+
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+</head>
+<body{% block body_attrs %}{% endblock %}>
+{% block body %}{% endblock %}
+{% block scripts %}{% endblock %}
+</body>
+</html>

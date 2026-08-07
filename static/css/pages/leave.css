@@ -1,0 +1,382 @@
+/* ==========================================================================
+   Nexo ERP — 휴가 (신청 · 조회 · 캘린더)
+   ========================================================================== */
+
+.split--leave {
+  grid-template-columns: 1fr 300px;
+  gap: 14px;
+  align-items: start;
+}
+
+/* --- 신청 폼 -------------------------------------------------------------- */
+
+.leaveform {
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.leaveform__label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  margin-bottom: 7px;
+}
+
+.leaveform .chips {
+  gap: 7px;
+}
+
+.leaveform__hint {
+  margin-top: 7px;
+  font-size: 12px;
+  color: var(--ink-4);
+}
+
+.leaveform__dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr 150px;
+  gap: 12px;
+  align-items: end;
+}
+
+.leaveform__tel {
+  width: 220px;
+}
+
+.leaveform .textarea {
+  border-color: var(--line-2);
+  border-radius: var(--radius-sm);
+  min-height: 0;
+}
+
+/* --- 사용 일수 박스 -------------------------------------------------------- */
+
+.daysbox {
+  background: linear-gradient(135deg, #f1eeff, #ece7ff);
+  border: 1px solid #ddd6fe;
+  border-radius: var(--radius-lg);
+  padding: 9px 12px;
+  text-align: center;
+}
+
+.daysbox__label {
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--primary-dark);
+}
+
+.daysbox__value {
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--primary-deep);
+}
+
+/* --- 사이드 카드 ---------------------------------------------------------- */
+
+/* --- 결재선 흐름 ---------------------------------------------------------- */
+
+.flowline {
+  display: flex;
+  flex-direction: column;
+}
+
+.flowline__item {
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+.flowline__rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.flowline__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-top: 5px;
+}
+
+.flowline__dot--filled {
+  background: var(--primary);
+}
+
+.flowline__dot--open {
+  border: 2px solid var(--primary);
+  background: var(--surface);
+}
+
+.flowline__bar {
+  width: 1px;
+  height: 38px;
+  background: #e0ddef;
+}
+
+.flowline__name {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.flowline__rank {
+  color: var(--ink-5);
+  font-weight: 400;
+}
+
+.flowline__role {
+  font-size: 11.5px;
+  color: var(--ink-4);
+}
+
+/* --- 잔여 현황 ------------------------------------------------------------ */
+
+.balance {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  font-size: 13px;
+}
+
+.balance__row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.balance__row span {
+  color: var(--ink-3);
+}
+
+.balance__row--total {
+  padding-top: 9px;
+  border-top: 1px solid #efedf8;
+}
+
+.balance__left {
+  color: var(--primary);
+  font-size: 15px;
+}
+
+.balance__note {
+  margin-top: 12px;
+  padding: 9px 11px;
+  background: var(--soft);
+  border-radius: var(--radius-sm);
+  font-size: 11.5px;
+  color: var(--ink-3);
+  line-height: 1.6;
+}
+
+/* --- 휴가 잔여 요약 카드 ---------------------------------------------------- */
+
+.ledger {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.ledger__card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  padding: 16px 18px;
+}
+
+.ledger__card--accent {
+  background: var(--primary);
+  color: var(--bg);
+  border-color: var(--primary-dark);
+  box-shadow: none;
+}
+
+.ledger__label {
+  font-size: 11px;
+  letter-spacing: 0.01em;
+  color: var(--ink-4);
+  margin-bottom: 8px;
+}
+
+.ledger__card--accent .ledger__label {
+  color: rgba(242, 242, 243, 0.7);
+}
+
+.ledger__value {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.ledger__unit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-4);
+}
+
+.ledger__card--accent .ledger__unit {
+  color: rgba(242, 242, 243, 0.7);
+}
+
+.myleave-grid {
+  grid-template-columns: 118px 100px 1fr 74px 110px 96px;
+}
+
+/* --- 캘린더 -------------------------------------------------------------- */
+
+.calhead {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.calhead__nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.calhead__legend {
+  display: flex;
+  gap: 14px;
+  font-size: 12px;
+  color: var(--ink-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dot--full {
+  width: 9px;
+  height: 9px;
+  background: var(--primary);
+}
+
+.dot--half {
+  width: 9px;
+  height: 9px;
+  background: var(--primary-soft);
+}
+
+.dot--etc {
+  width: 9px;
+  height: 9px;
+  background: var(--gray);
+}
+
+.select--xs {
+  height: 30px;
+  padding: 0 26px 0 8px;
+  font-size: 12.5px;
+  width: auto;
+  border-radius: var(--radius-sm);
+}
+
+.calgrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+
+.calgrid--dow {
+  margin-bottom: 6px;
+}
+
+.calgrid__dow {
+  font-size: 11px;
+  color: var(--ink-4);
+  text-align: center;
+  padding: 4px 0;
+}
+
+.calgrid__dow--sun {
+  color: var(--danger-2);
+}
+
+.calgrid__dow--sat {
+  color: var(--primary);
+}
+
+.calcell {
+  min-height: 88px;
+  padding: 6px;
+  border: 1px solid var(--line-5);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.calcell--out {
+  background: #f5f3fc;
+}
+
+.calcell--today {
+  border-color: var(--primary);
+  background: var(--soft-2);
+}
+
+.calcell__num {
+  font-size: 12px;
+  margin-bottom: 1px;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.calcell__num--out {
+  color: var(--gray-2);
+}
+
+.calcell__num--sun {
+  color: var(--danger-2);
+}
+
+.calcell__num--sat {
+  color: var(--primary);
+}
+
+.calevent {
+  font-size: 11px;
+  padding: 2px 5px;
+  border-radius: var(--radius-sm);
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.calevent--full {
+  background: var(--primary);
+}
+
+.calevent--half {
+  background: var(--primary-soft);
+}
+
+.calevent--etc {
+  background: var(--gray);
+}
+
+/* 모바일에서는 캘린더를 가로 스크롤로 */
+@media (max-width: 700px) {
+  .calgrid,
+  .calgrid--dow {
+    min-width: 620px;
+  }
+
+  .card__body:has(.calgrid) {
+    overflow-x: auto;
+  }
+
+  .leaveform__dates {
+    grid-template-columns: 1fr;
+  }
+
+  .leaveform__tel {
+    width: 100%;
+  }
+}

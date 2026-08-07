@@ -1,0 +1,194 @@
+{% extends "layouts/app.html" %}
+{% block styles %}<link rel="stylesheet" href="/static/css/pages/dashboard.css">{% endblock %}
+
+{% block main %}
+<div class="page">
+
+  <div class="page__bar">
+    <div class="page__greeting">
+      안녕하세요, <strong>{{ user.name }}</strong> {{ user.rank }}님. 오늘 처리할 항목이 <strong class="accent">3건</strong> 있습니다.
+    </div>
+    <div class="page__bar-tabs">
+      <span class="tabs__label">시안</span>
+      <div class="tabs">
+        <a class="tabs__btn {{ 'is-active' if tab == 'a' }}" href="/dashboard?tab=a">A · 요약 카드형</a>
+        <a class="tabs__btn {{ 'is-active' if tab == 'b' }}" href="/dashboard?tab=b">B · 오늘의 업무 중심</a>
+      </div>
+    </div>
+  </div>
+
+  {% if tab == 'a' %}
+  {# ---------- 시안 A · 요약 카드형 ---------- #}
+  <div>
+    <div class="stats">
+      <div class="stat stat--danger">
+        <div class="stat__label">오늘 업무일지</div>
+        <div class="stat__value">미작성</div>
+        <a class="linkbtn" href="/daily/new">지금 작성하기 →</a>
+      </div>
+      <div class="stat stat--primary">
+        <div class="stat__label">내 잔여 연차</div>
+        <div class="stat__value">9.5<span class="stat__unit">&nbsp;/ 15일</span></div>
+        <div class="stat__bar"><div class="stat__bar-fill" style="width:63%"></div></div>
+      </div>
+      <div class="stat stat--warn">
+        <div class="stat__label">결재 대기</div>
+        <div class="stat__value">4<span class="stat__unit">&nbsp;건</span></div>
+        <a class="linkbtn" href="/approve">결재함 열기 →</a>
+      </div>
+      <div class="stat stat--muted">
+        <div class="stat__label">오늘 휴가 팀원</div>
+        <div class="stat__value">2<span class="stat__unit">&nbsp;명</span></div>
+        <div class="stat__note">박서준(연차) · 이도윤(오후반차)</div>
+      </div>
+    </div>
+
+    <div class="split split--dash-a">
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">이번 주 팀 휴가 현황</h3>
+          <a class="linkbtn" href="/leave?tab=cal">캘린더 전체보기 →</a>
+        </div>
+        <div class="card__body">
+          <div class="weekgrid weekgrid--head">
+            <div></div>
+            <div class="weekgrid__dow">월 8/3</div>
+            <div class="weekgrid__dow">화 8/4</div>
+            <div class="weekgrid__dow is-today">수 8/5</div>
+            <div class="weekgrid__dow">목 8/6</div>
+            <div class="weekgrid__dow">금 8/7</div>
+          </div>
+          {% for row in team_week %}
+          <div class="weekgrid weekgrid--row">
+            <div class="weekgrid__name">{{ row.name }}</div>
+            {% for c in row.cells %}
+            <div class="weekcell weekcell--{{ c.tone }}">{{ c.label }}</div>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">공지사항</h3>
+        </div>
+        <div class="card__list">
+          {% for n in notices %}
+          <a class="notice" href="#none">
+            <span class="pill pill--{{ n.tone }}">{{ n.tag }}</span>
+            <span class="notice__title">{{ n.title }}</span>
+            <span class="notice__date">{{ n.date }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% else %}
+  {# ---------- 시안 B · 오늘의 업무 중심 ---------- #}
+  <div class="split split--dash-b">
+    <div class="stack">
+      <div class="todo">
+        <div class="todo__label">오늘 해야 할 일 · 3</div>
+        <div class="todo__list">
+          <div class="todo__item todo__item--primary">
+            <div>
+              <div class="todo__title">일일업무일지 작성</div>
+              <div class="todo__meta">8월 5일자 · 마감 18:00</div>
+            </div>
+            <a class="todo__btn todo__btn--fill" href="/daily/new">작성</a>
+          </div>
+          <div class="todo__item todo__item--warn">
+            <div>
+              <div class="todo__title">주간업무보고 제출</div>
+              <div class="todo__meta">32주차 · 금요일 마감 (D-2)</div>
+            </div>
+            <a class="todo__btn" href="/weekly?tab=write">작성</a>
+          </div>
+          <div class="todo__item todo__item--muted">
+            <div>
+              <div class="todo__title">결재 대기 4건 확인</div>
+              <div class="todo__meta">휴가 3건 · 업무보고 1건</div>
+            </div>
+            <a class="todo__btn" href="/approve">열기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">최근 작성 문서</h3>
+          <a class="linkbtn" href="/daily">전체보기 →</a>
+        </div>
+        <div class="card__list">
+          {% for d in recent_docs %}
+          <div class="recent">
+            <span class="recent__date">{{ d.date }}</span>
+            <span class="pill pill--{{ d.kind_tone }}">{{ d.kind }}</span>
+            <span class="recent__title">{{ d.title }}</span>
+            <span class="pill pill--{{ d.state_tone }}">{{ d.state }}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="stack">
+      <div class="card leavebox">
+        <div class="leavebox__head">
+          <h3 class="card__title">내 휴가</h3>
+          <a class="linkbtn" href="/leave?tab=new">신청 →</a>
+        </div>
+        <div class="leavebox__figure">
+          <div class="leavebox__num">9.5</div>
+          <div class="leavebox__unit">일 남음 / 총 15일</div>
+        </div>
+        <div class="leavebox__bar">
+          <div class="leavebox__used" style="width:36.7%"></div>
+          <div class="leavebox__pending" style="width:6.6%"></div>
+        </div>
+        <div class="leavebox__legend">
+          <span><span class="dot dot--used"></span>사용 5.5일</span>
+          <span><span class="dot dot--pending"></span>승인대기 1일</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">오늘 휴가 팀원</h3>
+        </div>
+        <div class="card__body onleave">
+          <div class="onleave__row">
+            <span class="onleave__avatar">박</span>
+            <span class="onleave__name">박서준 <span class="onleave__rank">책임</span></span>
+            <span class="onleave__tag">연차 · 전일</span>
+          </div>
+          <div class="onleave__row">
+            <span class="onleave__avatar">이</span>
+            <span class="onleave__name">이도윤 <span class="onleave__rank">주임</span></span>
+            <span class="onleave__tag">오후반차</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <h3 class="card__title">공지사항</h3>
+        </div>
+        <div class="card__list">
+          {% for n in notices[:3] %}
+          <a class="notice notice--compact" href="#none">
+            <span class="pill pill--{{ n.tone }}">{{ n.tag }}</span>
+            <span class="notice__title">{{ n.title }}</span>
+          </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

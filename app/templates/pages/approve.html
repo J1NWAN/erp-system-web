@@ -1,0 +1,78 @@
+{% extends "layouts/app.html" %}
+{% block styles %}<link rel="stylesheet" href="/static/css/pages/approve.css">{% endblock %}
+
+{% block main %}
+<div class="page split split--approve">
+
+  <div class="card card--flush">
+    <div class="inboxtabs">
+      <span class="inboxtab is-active">대기 4</span>
+      <span class="inboxtab">처리완료 26</span>
+      <span class="inboxtab">내가 올린 문서 8</span>
+    </div>
+
+    {% for a in rows %}
+    <a class="approw {{ 'is-picked' if a.is_picked }}" href="/approve?picked={{ a.index }}"
+       {% if a.is_picked %}aria-current="true"{% endif %}>
+      <div class="approw__top">
+        <span class="pill pill--{{ a.kind_tone }}">{{ a.kind }}</span>
+        <span class="approw__title">{{ a.title }}</span>
+      </div>
+      <div class="approw__meta">{{ a.meta }}</div>
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="card detail">
+    <div class="detail__head">
+      <div class="detail__kind">{{ picked_kind }}</div>
+      <h3 class="doc__title">{{ picked.title }}</h3>
+    </div>
+
+    <div class="detail__body">
+      <div class="detail__row"><span>신청자</span><strong>{{ picked.who }}</strong></div>
+      <div class="detail__row"><span>신청일</span><span>{{ picked.at }}</span></div>
+      <div class="detail__row"><span>기간</span><span>{{ picked.period }}</span></div>
+      <div class="detail__row"><span>사용일수</span><strong>{{ picked.d }}</strong></div>
+
+      <div class="detail__block">
+        <div class="detail__label">사유</div>
+        <div class="detail__text">{{ picked.reason }}</div>
+      </div>
+
+      <div class="detail__block">
+        <div class="detail__label">결재선</div>
+        <div class="detail__flow">
+          <span class="flowtag flowtag--from">{{ picked.who }}</span>
+          <span class="flowtag__arrow">→</span>
+          <span class="flowtag flowtag--wait">최민서 부장 · 대기</span>
+        </div>
+      </div>
+
+      <div class="detail__block">
+        <label class="detail__label" for="app-comment">결재 의견</label>
+        <textarea class="textarea detail__comment" id="app-comment" rows="2" placeholder="의견 입력 (선택)"></textarea>
+      </div>
+    </div>
+
+    <div class="detail__foot">
+      <button class="btn btn--reject" type="button" data-toast-msg="반려 처리했습니다.">반려</button>
+      <button class="btn btn--approve" type="button" data-toast-msg="승인 처리했습니다.">승인</button>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script>
+  // 결재 승인/반려는 데모 토스트로만 반응한다.
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest("[data-toast-msg]");
+    if (btn && window.nexoToast) {
+      e.preventDefault();
+      window.nexoToast(btn.dataset.toastMsg);
+    }
+  });
+</script>
+{% endblock %}
