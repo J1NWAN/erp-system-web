@@ -5,6 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from .routers import api, pages
@@ -27,3 +28,10 @@ app.include_router(pages.router)
 @app.get("/healthz", include_in_schema=False)
 async def healthz():
     return {"status": "ok"}
+
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """브라우저는 <link rel="icon"> 과 별개로 루트의 /favicon.ico 를 찾는다.
+    라우트가 없으면 매 방문마다 404가 남으므로 SVG 파비콘으로 응답한다."""
+    return FileResponse(STATIC_DIR / "favicon.svg", media_type="image/svg+xml")
