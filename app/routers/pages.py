@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import os
+
 from fastapi import APIRouter, Cookie, Form, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
@@ -13,6 +15,10 @@ router = APIRouter()
 
 SESSION_COOKIE = "nexo_session"
 SIDEBAR_COOKIE = "nexo_sidebar"
+
+# HTTPS로 서비스할 때만 Secure 쿠키를 쓴다. 로컬 http 개발에서는 꺼둬야
+# 브라우저가 쿠키를 저장하지 않는 문제가 생기지 않는다.
+SECURE_COOKIES = os.getenv("SECURE_COOKIES", "").lower() in ("1", "true", "yes")
 
 
 def _logged_in(session: str | None) -> bool:
@@ -41,7 +47,9 @@ async def login_page(request: Request, nexo_session: str | None = Cookie(None)):
 async def do_login(username: str = Form(""), password: str = Form("")):
     # 데모 시안이라 자격 증명은 검증하지 않고 바로 대시보드로 보낸다.
     response = RedirectResponse("/dashboard", status_code=303)
-    response.set_cookie(SESSION_COOKIE, "1", httponly=True, samesite="lax", path="/")
+    response.set_cookie(
+        SESSION_COOKIE, "1", httponly=True, samesite="lax", path="/", secure=SECURE_COOKIES
+    )
     return response
 
 

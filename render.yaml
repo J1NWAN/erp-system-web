@@ -1,0 +1,28 @@
+# Render 블루프린트 — https://render.com/docs/blueprint-spec
+#
+# 대시보드에서 만든 서비스와 동일한 설정을 코드로 남겨둔다.
+# 새 환경에 다시 띄울 때 이 파일로 재현할 수 있다.
+
+services:
+  - type: web
+    name: nexo-erp
+    runtime: python
+    plan: free
+    region: oregon
+    branch: claude/nexo-erp-web-app-67l1dm
+    buildCommand: pip install -r requirements.txt
+    # Render가 주입하는 $PORT에 바인딩해야 한다. 0.0.0.0이 아니면 외부에서 닿지 않는다.
+    # 프록시 뒤에 있으므로 X-Forwarded-* 헤더를 신뢰하도록 켠다.
+    startCommand: >-
+      uvicorn app.main:app
+      --host 0.0.0.0
+      --port $PORT
+      --proxy-headers
+      --forwarded-allow-ips="*"
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      - key: SECURE_COOKIES
+        value: "true"
