@@ -1,4 +1,4 @@
-"""Nexo ERP — FastAPI 진입점."""
+"""ERP — FastAPI 진입점."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_DIR = BASE_DIR / "static"
 
 app = FastAPI(
-    title="Nexo ERP",
+    title="ERP",
     description="사내 업무 시스템 — 업무일지 · 주간보고 · 휴가 · 결재",
     version="1.0.0",
 )

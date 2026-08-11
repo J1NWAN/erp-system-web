@@ -29,7 +29,7 @@ const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, d
 
 // 로그인 화면은 쿠키 없는 컨텍스트에서 찍는다
 const anon = await browser.newContext({ viewport: { width: 1440, height: 900 } });
-await ctx.addCookies([{ name: 'nexo_session', value: '1', url: BASE }]);
+await ctx.addCookies([{ name: 'erp_session', value: '1', url: BASE }]);
 
 const errors = [];
 for (const [name, path, needAuth] of pages) {

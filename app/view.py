@@ -23,7 +23,7 @@ CURRENT_USER = {
     "name": "김지현",
     "rank": "선임",
     "dept": "개발1팀",
-    "email": "kim.jh@nexo.co.kr",
+    "email": "kim.jh@example.co.kr",
     "initial": "김",
 }
 

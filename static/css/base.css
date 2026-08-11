@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nexo ERP — 기반 스타일
+   ERP — 기반 스타일
    디자인 토큰 · 리셋 · 타이포그래피
    ========================================================================== */
 
@@ -75,6 +75,11 @@
   --sidebar-w-collapsed: 72px;
   --header-h: 56px;
 
+  /* 모바일에서 사이드바가 하단 탭바로 바뀔 때의 높이.
+     모달·토스트가 이 영역을 침범하지 않도록 기준으로 쓴다. */
+  --tabbar-h: 74px;
+  --tabbar-safe: calc(var(--tabbar-h) + env(safe-area-inset-bottom));
+
   --font-sans: "Pretendard Variable", Pretendard, system-ui, -apple-system,
     "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
 }
@@ -83,6 +88,12 @@
 
 * {
   box-sizing: border-box;
+}
+
+/* .btn 같은 컴포넌트가 display 를 지정하면 UA 스타일시트의
+   [hidden] { display: none } 을 이겨버린다. hidden 속성이 항상 우선하도록 못박는다. */
+[hidden] {
+  display: none !important;
 }
 
 body {

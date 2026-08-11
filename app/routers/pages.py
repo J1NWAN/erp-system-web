@@ -13,8 +13,8 @@ from ..templating import templates
 
 router = APIRouter()
 
-SESSION_COOKIE = "nexo_session"
-SIDEBAR_COOKIE = "nexo_sidebar"
+SESSION_COOKIE = "erp_session"
+SIDEBAR_COOKIE = "erp_sidebar"
 
 # HTTPS로 서비스할 때만 Secure 쿠키를 쓴다. 로컬 http 개발에서는 꺼둬야
 # 브라우저가 쿠키를 저장하지 않는 문제가 생기지 않는다.
@@ -37,8 +37,8 @@ def _login_redirect() -> RedirectResponse:
 
 
 @router.get("/", response_class=HTMLResponse)
-async def login_page(request: Request, nexo_session: str | None = Cookie(None)):
-    if _logged_in(nexo_session):
+async def login_page(request: Request, erp_session: str | None = Cookie(None)):
+    if _logged_in(erp_session):
         return RedirectResponse("/dashboard", status_code=303)
     return templates.TemplateResponse(request, "login.html", {})
 
@@ -67,13 +67,13 @@ async def do_logout():
 async def dashboard(
     request: Request,
     tab: str = Query("a"),
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
     tab = tab if tab in ("a", "b") else "a"
-    ctx = view.base_context("dash", _collapsed(nexo_sidebar))
+    ctx = view.base_context("dash", _collapsed(erp_sidebar))
     ctx.update({
         "tab": tab,
         "team_week": data.team_week(),
@@ -91,12 +91,12 @@ async def dashboard(
 @router.get("/daily", response_class=HTMLResponse)
 async def daily_list(
     request: Request,
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
-    ctx = view.base_context("daily", _collapsed(nexo_sidebar))
+    ctx = view.base_context("daily", _collapsed(erp_sidebar))
     ctx["rows"] = [
         {**r, "state_tone": data.state_tone(r["state"])} for r in data.DAILY_ROWS
     ]
@@ -108,12 +108,12 @@ async def daily_new(
     request: Request,
     tasks: int = Query(3, ge=1, le=30),
     plans: int = Query(2, ge=1, le=30),
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
-    ctx = view.base_context("daily-new", _collapsed(nexo_sidebar))
+    ctx = view.base_context("daily-new", _collapsed(erp_sidebar))
     ctx.update({
         "task_rows": view.task_rows(tasks),
         "plan_rows": view.plan_rows(plans),
@@ -130,13 +130,13 @@ async def daily_new(
 async def weekly(
     request: Request,
     tab: str = Query("view"),
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
     tab = tab if tab in ("view", "write") else "view"
-    ctx = view.base_context("weekly", _collapsed(nexo_sidebar))
+    ctx = view.base_context("weekly", _collapsed(erp_sidebar))
     ctx.update({
         "tab": tab,
         "rows": [{**r, "state_tone": data.state_tone(r["state"])} for r in data.WEEKLY_ROWS],
@@ -159,17 +159,17 @@ async def leave(
     duration: str = Query("전일"),
     start: str = Query("2026-08-17"),
     end: str = Query("2026-08-18"),
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
     tab = tab if tab in ("new", "my", "cal") else "new"
     leave_type = type if type in data.LEAVE_TYPES else data.LEAVE_TYPES[0]
     dur = duration if duration in data.DURATIONS else data.DURATIONS[0]
     end_value = end if dur == "전일" else start
 
-    ctx = view.base_context("leave", _collapsed(nexo_sidebar))
+    ctx = view.base_context("leave", _collapsed(erp_sidebar))
     ctx.update({
         "tab": tab,
         "leave_types": data.LEAVE_TYPES,
@@ -196,12 +196,12 @@ async def leave(
 async def approve(
     request: Request,
     picked: int = Query(0, ge=0),
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
-    ctx = view.base_context("approve", _collapsed(nexo_sidebar))
+    ctx = view.base_context("approve", _collapsed(erp_sidebar))
     ctx.update(view.approvals(picked))
     return templates.TemplateResponse(request, "pages/approve.html", ctx)
 
@@ -213,13 +213,13 @@ async def approve(
 async def admin(
     request: Request,
     tab: str = Query("org"),
-    nexo_session: str | None = Cookie(None),
-    nexo_sidebar: str | None = Cookie(None),
+    erp_session: str | None = Cookie(None),
+    erp_sidebar: str | None = Cookie(None),
 ):
-    if not _logged_in(nexo_session):
+    if not _logged_in(erp_session):
         return _login_redirect()
     tab = tab if tab in ("org", "perm", "role", "leave", "approval") else "org"
-    ctx = view.base_context("admin", _collapsed(nexo_sidebar))
+    ctx = view.base_context("admin", _collapsed(erp_sidebar))
     ctx.update({
         "tab": tab,
         "members": view.members(),

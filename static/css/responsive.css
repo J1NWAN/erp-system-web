@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nexo ERP — 반응형
+   ERP — 반응형
    원본 시안의 브레이크포인트(1180 / 1024 / 700 / 560)를 그대로 따른다.
    ========================================================================== */
 
@@ -221,12 +221,29 @@
     grid-template-columns: 1fr;
   }
 
+  /* 레이어 팝업은 하단 탭바를 침범하지 않는다.
+     패널을 탭바 위쪽에 붙이고, 남는 높이만큼만 차지하게 한다. */
   .modal {
-    padding: 12px;
+    align-items: flex-end;
+    padding: 12px 12px calc(12px + var(--tabbar-safe));
   }
 
-  .modal__panel {
-    max-height: calc(100vh - 24px);
+  .modal__panel,
+  .picker__panel {
+    max-height: calc(100dvh - var(--tabbar-safe) - 24px);
+  }
+
+  /* 토스트도 같은 규칙을 따른다. */
+  .toast {
+    bottom: calc(12px + var(--tabbar-safe));
+    left: 12px;
+    right: 12px;
+    transform: translateY(8px);
+    text-align: center;
+  }
+
+  .toast.is-on {
+    transform: translateY(0);
   }
 
   .page__bar {

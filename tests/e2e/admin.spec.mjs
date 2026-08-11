@@ -5,7 +5,7 @@ const BASE = process.env.BASE_URL || 'http://127.0.0.1:8000';
 mkdirSync(OUT, { recursive: true });
 const b = await chromium.launch({ executablePath: process.env.CHROMIUM_PATH || undefined });
 const ctx = await b.newContext({ viewport:{width:1440,height:900} });
-await ctx.addCookies([{name:'nexo_session',value:'1',url:BASE}]);
+await ctx.addCookies([{name:'erp_session',value:'1',url:BASE}]);
 const errs=[]; const ok=m=>console.log('  ✓',m); const bad=m=>{console.log('  ✗',m);errs.push(m);}
 const p = await ctx.newPage();
 p.on('pageerror', e=>bad('pageerror: '+e.message));

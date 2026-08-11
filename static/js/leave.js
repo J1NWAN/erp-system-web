@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nexo ERP — 휴가 신청 폼
+   ERP — 휴가 신청 폼
    휴가 종류 / 사용 구분 칩 선택, 사용 일수 계산 (서버 계산 API 사용)
    ========================================================================== */
 
@@ -45,7 +45,7 @@
     const token = {};
     pending = token;
     try {
-      const body = await window.nexoApi("/api/leave/days", {
+      const body = await window.erpApi("/api/leave/days", {
         method: "POST",
         body: JSON.stringify(payload),
       });
@@ -55,7 +55,7 @@
       if (body.end && endInput.value !== body.end) endInput.value = body.end;
     } catch (err) {
       if (pending !== token) return;
-      window.nexoToast(err.message);
+      window.erpToast(err.message);
     }
   }
 
@@ -82,7 +82,7 @@
     const toastBtn = e.target.closest("[data-toast-msg]");
     if (toastBtn) {
       e.preventDefault();
-      window.nexoToast(toastBtn.dataset.toastMsg);
+      window.erpToast(toastBtn.dataset.toastMsg);
     }
   });
 

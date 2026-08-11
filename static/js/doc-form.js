@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nexo ERP — 문서 작성 폼
+   ERP — 문서 작성 폼
    업무 내용 / 예정사항 행 추가·삭제, 임시저장 토스트
    ========================================================================== */
 
@@ -37,8 +37,9 @@
     container.appendChild(clone);
     renumber(container);
 
+    // 모바일에서는 자동 포커스를 건너뛴다 (키보드가 올라오며 화면이 확대됨).
     const first = clone.querySelector("input");
-    if (first) first.focus();
+    if (first && window.erpFocus) window.erpFocus(first);
   }
 
   form.addEventListener("click", (e) => {
@@ -65,9 +66,9 @@
     }
 
     const toastBtn = e.target.closest("[data-toast-msg]");
-    if (toastBtn && window.nexoToast) {
+    if (toastBtn && window.erpToast) {
       e.preventDefault();
-      window.nexoToast(toastBtn.dataset.toastMsg);
+      window.erpToast(toastBtn.dataset.toastMsg);
     }
   });
 })();

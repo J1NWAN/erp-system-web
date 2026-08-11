@@ -69,9 +69,9 @@
   // 결재 승인/반려는 데모 토스트로만 반응한다.
   document.addEventListener("click", function (e) {
     var btn = e.target.closest("[data-toast-msg]");
-    if (btn && window.nexoToast) {
+    if (btn && window.erpToast) {
       e.preventDefault();
-      window.nexoToast(btn.dataset.toastMsg);
+      window.erpToast(btn.dataset.toastMsg);
     }
   });
 </script>

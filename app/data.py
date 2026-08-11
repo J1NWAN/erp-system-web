@@ -1,6 +1,6 @@
-"""Nexo ERP 데모 데이터.
+"""ERP 데모 데이터.
 
-원본 디자인 시안(Nexo ERP)의 시드 데이터를 그대로 옮긴 모듈이다.
+원본 디자인 시안의 시드 데이터를 그대로 옮긴 모듈이다.
 실제 서비스에서는 이 자리에 DB 레이어가 들어간다.
 """
 
@@ -11,16 +11,16 @@ from datetime import date, timedelta
 # --- 조직도 --------------------------------------------------------------
 
 DIRECTORY = [
-    {"dept": "개발1팀", "name": "최민서", "rank": "부장", "email": "choi.ms@nexo.co.kr"},
-    {"dept": "개발1팀", "name": "박서준", "rank": "책임", "email": "park.sj@nexo.co.kr"},
-    {"dept": "개발1팀", "name": "김지현", "rank": "선임", "email": "kim.jh@nexo.co.kr"},
-    {"dept": "개발1팀", "name": "이도윤", "rank": "주임", "email": "lee.dy@nexo.co.kr"},
-    {"dept": "개발1팀", "name": "한도현", "rank": "주임", "email": "han.dh@nexo.co.kr"},
-    {"dept": "개발1팀", "name": "정하윤", "rank": "인턴", "email": "jung.hy@nexo.co.kr"},
-    {"dept": "개발2팀", "name": "서지우", "rank": "선임", "email": "seo.jw@nexo.co.kr"},
-    {"dept": "개발2팀", "name": "오수빈", "rank": "주임", "email": "oh.sb@nexo.co.kr"},
-    {"dept": "경영지원팀", "name": "윤채원", "rank": "책임", "email": "yoon.cw@nexo.co.kr"},
-    {"dept": "경영지원팀", "name": "강태오", "rank": "이사", "email": "kang.to@nexo.co.kr"},
+    {"dept": "개발1팀", "name": "최민서", "rank": "부장", "email": "choi.ms@example.co.kr"},
+    {"dept": "개발1팀", "name": "박서준", "rank": "책임", "email": "park.sj@example.co.kr"},
+    {"dept": "개발1팀", "name": "김지현", "rank": "선임", "email": "kim.jh@example.co.kr"},
+    {"dept": "개발1팀", "name": "이도윤", "rank": "주임", "email": "lee.dy@example.co.kr"},
+    {"dept": "개발1팀", "name": "한도현", "rank": "주임", "email": "han.dh@example.co.kr"},
+    {"dept": "개발1팀", "name": "정하윤", "rank": "인턴", "email": "jung.hy@example.co.kr"},
+    {"dept": "개발2팀", "name": "서지우", "rank": "선임", "email": "seo.jw@example.co.kr"},
+    {"dept": "개발2팀", "name": "오수빈", "rank": "주임", "email": "oh.sb@example.co.kr"},
+    {"dept": "경영지원팀", "name": "윤채원", "rank": "책임", "email": "yoon.cw@example.co.kr"},
+    {"dept": "경영지원팀", "name": "강태오", "rank": "이사", "email": "kang.to@example.co.kr"},
 ]
 
 STAFF = [

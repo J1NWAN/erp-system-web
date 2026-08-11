@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nexo ERP — 관리자 화면
+   ERP — 관리자 화면
    권한 모달 · 사원 모달 · 결재선 단계 전환
    ========================================================================== */
 
@@ -9,8 +9,10 @@
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
 
-  const toast = window.nexoToast;
-  const api = window.nexoApi;
+  const toast = window.erpToast;
+  const api = window.erpApi;
+  // 모바일에서는 자동 포커스를 건너뛴다 (키보드가 올라오며 화면이 확대됨).
+  const focusField = window.erpFocus || ((el) => el && el.focus());
 
   /* --- 권한 모달 ---------------------------------------------------------- */
 
@@ -28,7 +30,7 @@
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
     roleModal.hidden = false;
-    $("[data-role-name]", roleModal).focus();
+    focusField($("[data-role-name]", roleModal));
   }
 
   function closeRole() {
@@ -165,7 +167,7 @@
     if (!isEdit) applyRankDays(field("rank").value);
 
     empModal.hidden = false;
-    field("id").focus();
+    focusField(field("id"));
   }
 
   function closeEmp() {
@@ -271,7 +273,7 @@
     // 결재선 박스는 서버 저장이 필요하므로 확정 콜백을 직접 넘긴다.
     e.stopImmediatePropagation();
     e.preventDefault();
-    window.nexoOpenPicker(box, btn.dataset.pickerMode, async (names) => {
+    window.erpOpenPicker(box, btn.dataset.pickerMode, async (names) => {
       try {
         await api("/api/approval-lines/step", {
           method: "POST",

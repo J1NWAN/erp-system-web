@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Nexo ERP — 프런트엔드 동작
+   ERP — 프런트엔드 동작
    사이드바 접기 · 사용자 메뉴 · 인원 선택 모달 · 토스트
    ========================================================================== */
 
@@ -14,6 +14,16 @@
   function setCookie(name, value, days) {
     const maxAge = (days || 365) * 24 * 60 * 60;
     document.cookie = `${name}=${value};path=/;max-age=${maxAge};samesite=lax`;
+  }
+
+  /** CSS 의 모바일 브레이크포인트와 같은 기준. 태블릿(701px 이상)은 제외된다. */
+  function isMobile() {
+    return window.matchMedia("(max-width: 700px)").matches;
+  }
+
+  /** 모바일에서 자동 포커스는 키보드를 띄우고 화면을 확대시켜 방해가 되므로 건너뛴다. */
+  function focusUnlessMobile(el) {
+    if (el && !isMobile()) el.focus();
   }
 
   async function api(url, options) {
@@ -47,8 +57,10 @@
     toastTimer = setTimeout(() => el.classList.remove("is-on"), 2200);
   }
 
-  window.nexoToast = toast;
-  window.nexoApi = api;
+  window.erpToast = toast;
+  window.erpApi = api;
+  window.erpIsMobile = isMobile;
+  window.erpFocus = focusUnlessMobile;
 
   /* --- 사이드바 접기 ------------------------------------------------------ */
 
@@ -60,7 +72,7 @@
     btn.addEventListener("click", () => {
       const collapsed = shell.classList.toggle("is-collapsed");
       btn.setAttribute("aria-pressed", collapsed ? "true" : "false");
-      setCookie("nexo_sidebar", collapsed ? "1" : "0");
+      setCookie("erp_sidebar", collapsed ? "1" : "0");
     });
   }
 
@@ -195,7 +207,7 @@
     search.value = "";
     picker.el.hidden = false;
     loadPicker("");
-    search.focus();
+    focusUnlessMobile(search);
   }
 
   function closePicker() {
@@ -278,7 +290,7 @@
     });
   }
 
-  window.nexoOpenPicker = openPicker;
+  window.erpOpenPicker = openPicker;
 
   /* --- 초기화 ------------------------------------------------------------ */
 

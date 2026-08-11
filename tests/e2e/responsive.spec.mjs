@@ -10,7 +10,7 @@ const sizes = [[1440,900,'desktop'],[1100,900,'tablet'],[820,900,'tablet-sm'],[3
 
 for (const [w,h,label] of sizes) {
   const ctx = await b.newContext({ viewport:{width:w,height:h} });
-  await ctx.addCookies([{name:'nexo_session',value:'1',url:BASE}]);
+  await ctx.addCookies([{name:'erp_session',value:'1',url:BASE}]);
   const p = await ctx.newPage();
   p.on('pageerror', e=>bad(`${label} pageerror: ${e.message}`));
 
