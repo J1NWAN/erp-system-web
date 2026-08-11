@@ -509,6 +509,26 @@ a.trow:hover,
   font-size: 13px;
 }
 
+/* iOS Safari 의 날짜 입력은 자체 기본 스타일에서 나오는 고유 폭이 커서,
+   width:100% 를 줘도 그 폭 아래로 줄어들지 않고 카드 밖으로 삐져나온다.
+   기본 스타일을 끄고 최대 폭을 못박아 옆 입력칸과 같은 자리만 쓰게 한다. */
+input[type="date"] {
+  -webkit-appearance: none;
+  appearance: none;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* 값 텍스트는 WebKit 이 별도 요소로 그린다. iOS 기본 정렬이 달라
+   글자가 오른쪽으로 밀리므로 왼쪽 정렬과 여백을 직접 지정한다.
+   min-height 는 값이 비었을 때 높이가 무너지는 것을 막는다. */
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  margin: 0;
+  min-height: 1.2em;
+}
+
 .input:disabled,
 .select:disabled,
 .input[readonly] {

@@ -42,6 +42,13 @@
   align-items: end;
 }
 
+/* 그리드 칸의 기본값 min-width:auto 는 칸이 내용의 최소 폭 아래로 줄지 못하게 한다.
+   날짜 입력처럼 고유 폭이 큰 요소가 들어가면 칸이 그만큼 벌어져 카드를 넘친다.
+   칸이 남은 폭에 맞게 줄어들도록 풀어 준다. */
+.leaveform__dates > * {
+  min-width: 0;
+}
+
 .leaveform__tel {
   width: 220px;
 }

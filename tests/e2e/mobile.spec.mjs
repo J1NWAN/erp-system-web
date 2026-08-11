@@ -57,6 +57,35 @@ for (const [label, w, h] of cases) {
     await p.keyboard.press('Escape'); await p.waitForTimeout(200);
   }
 
+  // --- 휴가신청: 날짜 입력이 다른 입력칸과 같은 자리만 쓰는지
+  await p.goto(BASE+'/leave?tab=new'); await p.waitForTimeout(350);
+  const box = await p.evaluate(()=>{
+    const R = s => { const r = document.querySelector(s).getBoundingClientRect();
+                     return [Math.round(r.left), Math.round(r.right)]; };
+    return {card:R('[data-leave-form]'), start:R('#l-start'), end:R('#l-end'),
+            reason:R('#l-reason'), tel:R('#l-tel')};
+  });
+  const same = JSON.stringify(box.start)===JSON.stringify(box.reason)
+            && JSON.stringify(box.end)===JSON.stringify(box.reason)
+            && JSON.stringify(box.tel)===JSON.stringify(box.reason);
+  same ? ok(`시작일·종료일이 사유·연락처와 같은 폭 (${box.reason[0]}–${box.reason[1]})`)
+       : bad(`날짜 입력 폭이 다름: ${JSON.stringify(box)}`);
+
+  /* iOS Safari 의 날짜 입력은 고유 폭이 커서 그리드 칸을 밀어내고 카드를 넘친다.
+     Chromium 에는 그 동작이 없으므로 글자 크기를 키워 같은 상황을 만든다.
+     min-width:0 / max-width:100% 가 빠지면 카드가 화면 밖으로 늘어난다. */
+  await p.addStyleTag({content:'#l-start,#l-end{font-size:40px!important}'});
+  await p.waitForTimeout(200);
+  const grown = await p.evaluate(()=>{
+    const c = document.querySelector('[data-leave-form]').getBoundingClientRect();
+    const s = document.querySelector('#l-start').getBoundingClientRect();
+    return {cardR:Math.round(c.right), startR:Math.round(s.right), vw:window.innerWidth};
+  });
+  (grown.cardR <= grown.vw && grown.startR <= grown.cardR)
+    ? ok(`날짜 입력이 커져도 카드 밖으로 나가지 않음 (카드 ${grown.cardR} ≤ 화면 ${grown.vw})`)
+    : bad(`카드가 화면 밖으로 밀림: 카드 ${grown.cardR} / 화면 ${grown.vw}`);
+  if (w===390 && h===844) await p.screenshot({path: `${OUT}/mobile-leaveform.png`});
+
   // --- 자동 포커스 없어야 함
   await p.goto(BASE+'/daily/new'); await p.waitForTimeout(350);
   await p.click('[data-picker-open="#box-to"]'); await p.waitForTimeout(500);
