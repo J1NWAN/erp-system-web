@@ -21,16 +21,18 @@
     <div class="card orgtree">
       <h4 class="sidecard__title">조직도</h4>
       <div class="orgtree__body">
-        <div class="orgtree__root">전사</div>
+        <div class="orgtree__root">{{ org_tree.root }}</div>
         <div class="orgtree__branch">
-          <div class="orgtree__div">개발본부</div>
-          <div class="orgtree__team">개발1팀 · 6</div>
-          <div class="orgtree__team">개발2팀 · 4</div>
-          <div class="orgtree__dept">경영지원팀 · 5</div>
-          <div class="orgtree__dept">영업팀 · 5</div>
+          {# 클래스명을 문자열로 조립하지 않고 분기로 적는다. 그래야 tools/audit_css.py
+             가 실제로 쓰이는 클래스를 찾아낼 수 있다. #}
+          {% for n in org_tree.nodes %}
+          {% if n.kind == 'div' %}<div class="orgtree__div">{{ n.label }}</div>
+          {% elif n.kind == 'team' %}<div class="orgtree__team">{{ n.label }}</div>
+          {% else %}<div class="orgtree__dept">{{ n.label }}</div>{% endif %}
+          {% endfor %}
         </div>
       </div>
-      <button class="dashbtn" type="button">+ 부서 추가</button>
+      <button class="dashbtn" type="button" data-dept-new>+ 부서 추가</button>
     </div>
 
     <div class="card card--flush">
@@ -68,29 +70,29 @@
       <h3 class="card__title">직급 · 역할 관리</h3>
       <p class="panel__desc">직급 이름은 관리자가 자유롭게 변경할 수 있으며 조직도 · 결재선에 즉시 반영됩니다.</p>
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap" data-rank-rows>
       <div class="thead rank-grid">
         <div>순서</div><div>직급명</div><div>기본 연차</div><div>권한</div><div></div>
       </div>
       {% for r in ranks %}
-      <div class="trow rank-grid rank-grid--row">
+      <div class="trow rank-grid rank-grid--row" data-rank-row>
         <div class="tcell--center gridtable__no">{{ r.no }}</div>
-        <div><input class="table-input" type="text" value="{{ r.name }}" aria-label="직급명"></div>
-        <div><input class="table-input" type="text" value="{{ r.days }}" aria-label="기본 연차"></div>
+        <div><input class="table-input" type="text" value="{{ r.name }}" aria-label="직급명" data-rank-field="name"></div>
+        <div><input class="table-input" type="text" value="{{ r.days }}" aria-label="기본 연차" data-rank-field="days"></div>
         <div>
-          <select class="table-input" aria-label="권한">
-            <option {{ 'selected' if r.perm == '일반' }}>일반</option>
-            <option {{ 'selected' if r.perm == '팀 승인' }}>팀 승인</option>
-            <option {{ 'selected' if r.perm == '전체 관리' }}>전체 관리</option>
+          <select class="table-input" aria-label="권한" data-rank-field="perm">
+            {% for p in rank_perms %}
+            <option {{ 'selected' if r.perm == p }}>{{ p }}</option>
+            {% endfor %}
           </select>
         </div>
-        <div class="tcell--center"><button class="rowdel" type="button" aria-label="직급 삭제">×</button></div>
+        <div class="tcell--center"><button class="rowdel" type="button" aria-label="직급 삭제" data-rank-del>×</button></div>
       </div>
       {% endfor %}
     </div>
     <div class="panel__foot">
-      <button class="dashbtn dashbtn--inline" type="button">+ 직급 추가</button>
-      <button class="btn btn--primary btn--sm2" type="button" data-toast-msg="직급 설정을 저장했습니다.">저장</button>
+      <button class="dashbtn dashbtn--inline" type="button" data-rank-add>+ 직급 추가</button>
+      <button class="btn btn--primary btn--sm2" type="button" data-rank-save>저장</button>
     </div>
   </div>
 
@@ -101,32 +103,33 @@
       <h3 class="card__title">휴가 종류 관리</h3>
       <p class="panel__desc">종류를 추가하거나 이름 · 차감 방식 · 반차 허용 여부를 설정합니다.</p>
     </div>
-    <div class="table-wrap">
+    <div class="table-wrap" data-leave-rows>
       <div class="thead leavecfg-grid">
         <div>종류명</div><div>연차 차감</div><div>반차 허용</div><div>증빙 필요</div><div></div>
       </div>
       {% for c in leave_config %}
-      <div class="trow leavecfg-grid rank-grid--row">
-        <div><input class="table-input" type="text" value="{{ c.name }}" aria-label="종류명"></div>
+      <div class="trow leavecfg-grid rank-grid--row" data-leave-row>
+        <div><input class="table-input" type="text" value="{{ c.name }}" aria-label="종류명" data-leave-field="name"></div>
         <div>
-          <select class="table-input" aria-label="연차 차감">
-            <option {{ 'selected' if c.deduct == '차감' }}>차감</option>
-            <option {{ 'selected' if c.deduct == '미차감' }}>미차감</option>
+          <select class="table-input" aria-label="연차 차감" data-leave-field="deduct">
+            {% for d in leave_deducts %}
+            <option {{ 'selected' if c.deduct == d }}>{{ d }}</option>
+            {% endfor %}
           </select>
         </div>
         <div class="tcell--center">
-          <input class="checkbox checkbox--md" type="checkbox" {{ 'checked' if c.half }} aria-label="{{ c.name }} 반차 허용">
+          <input class="checkbox checkbox--md" type="checkbox" {{ 'checked' if c.half }} aria-label="{{ c.name }} 반차 허용" data-leave-field="half">
         </div>
         <div class="tcell--center">
-          <input class="checkbox checkbox--md" type="checkbox" {{ 'checked' if c.proof }} aria-label="{{ c.name }} 증빙 필요">
+          <input class="checkbox checkbox--md" type="checkbox" {{ 'checked' if c.proof }} aria-label="{{ c.name }} 증빙 필요" data-leave-field="proof">
         </div>
-        <div class="tcell--center"><button class="rowdel" type="button" aria-label="휴가 종류 삭제">×</button></div>
+        <div class="tcell--center"><button class="rowdel" type="button" aria-label="휴가 종류 삭제" data-leave-del>×</button></div>
       </div>
       {% endfor %}
     </div>
     <div class="panel__foot">
-      <button class="dashbtn dashbtn--inline" type="button">+ 휴가 종류 추가</button>
-      <button class="btn btn--primary btn--sm2" type="button" data-toast-msg="휴가 종류를 저장했습니다.">저장</button>
+      <button class="dashbtn dashbtn--inline" type="button" data-leave-add>+ 휴가 종류 추가</button>
+      <button class="btn btn--primary btn--sm2" type="button" data-leave-save>저장</button>
     </div>
   </div>
 
@@ -231,6 +234,7 @@
 {% endblock %}
 
 {% block modals %}
+{% include "partials/dept_modal.html" %}
 {% include "partials/role_modal.html" %}
 {% include "partials/employee_modal.html" %}
 {% endblock %}

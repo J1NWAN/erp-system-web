@@ -32,6 +32,21 @@ STAFF = [
     {"id": "N-2026-003", "name": "정하윤", "rank": "인턴", "dept": "개발1팀", "joined": "2026-01-02", "leave": "11.0일"},
 ]
 
+# 관리자 > 조직 탭의 조직도 트리.
+#   kind — div: 본부, team: 본부 하위 팀, dept: 본부에 속하지 않는 부서
+#   count — 트리에 함께 찍는 인원수. 본부(div)는 표시하지 않으므로 None.
+ORG_ROOT = "전사"
+
+DEPARTMENTS = [
+    {"name": "개발본부", "kind": "div", "count": None},
+    {"name": "개발1팀", "kind": "team", "count": 6},
+    {"name": "개발2팀", "kind": "team", "count": 4},
+    {"name": "경영지원팀", "kind": "dept", "count": 5},
+    {"name": "영업팀", "kind": "dept", "count": 5},
+]
+
+DEPT_KINDS = ("div", "team", "dept")
+
 RANKS = [
     {"no": 1, "name": "인턴", "days": "11", "perm": "일반"},
     {"no": 2, "name": "주임", "days": "15", "perm": "일반"},
@@ -41,6 +56,8 @@ RANKS = [
     {"no": 6, "name": "이사", "days": "20", "perm": "전체 관리"},
     {"no": 7, "name": "상무", "days": "20", "perm": "전체 관리"},
 ]
+
+RANK_PERMS = ("일반", "팀 승인", "전체 관리")
 
 MENU_DEFS = [
     {"key": "dash", "label": "대시보드"},
@@ -147,7 +164,6 @@ WEEKLY_TASKS = [
     {"no": 4, "system": "공통", "content": "8월 정기 배포 QA 대응", "received": "2026-08-04", "started": "2026-08-05", "done": "진행중"},
 ]
 
-LEAVE_TYPES = ["휴가(연차)", "병가", "경조휴가", "출산휴가", "포상휴가", "기타(연차미반영)"]
 DURATIONS = ["전일", "오전반차", "오후반차"]
 
 MY_LEAVES = [
@@ -167,6 +183,12 @@ LEAVE_CONFIG = [
     {"name": "포상휴가", "deduct": "미차감", "half": True, "proof": False},
     {"name": "기타(연차미반영)", "deduct": "미차감", "half": True, "proof": False},
 ]
+
+LEAVE_DEDUCTS = ("차감", "미차감")
+
+# 휴가 신청 화면의 종류 목록은 관리자 > 휴가 종류 설정에서 나온다.
+# 여기서는 시드 값만 만들고, 실행 중에는 store.leave_type_names() 를 쓴다.
+LEAVE_TYPES = [c["name"] for c in LEAVE_CONFIG]
 
 APPROVAL_ITEMS = [
     {"kind": "휴가", "title": "연차 휴가 신청 (8/17–8/18)", "who": "김지현 선임", "at": "2026-08-05 09:12",
@@ -218,11 +240,6 @@ def person(name: str) -> dict | None:
 def label(name: str) -> str:
     p = person(name)
     return f"{p['name']} {p['rank']}" if p else name
-
-
-def rank_days(rank_name: str) -> str:
-    r = next((x for x in RANKS if x["name"] == rank_name), None)
-    return f"{float(r['days']):.1f}" if r else "15.0"
 
 
 def state_tone(state: str) -> str:

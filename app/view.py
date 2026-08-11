@@ -65,6 +65,29 @@ def directory_groups(query: str = "") -> list[dict]:
     return groups
 
 
+def org_tree() -> dict:
+    """관리자 > 조직 탭의 조직도 트리.
+
+    본부(div)는 이름만, 팀·부서는 인원수까지 붙여 한 줄로 만든다.
+    """
+    return {
+        "root": data.ORG_ROOT,
+        "nodes": [
+            {
+                "name": d["name"],
+                "kind": d["kind"],
+                "label": d["name"] if d["count"] is None else f"{d['name']} · {d['count']}",
+            }
+            for d in store.depts
+        ],
+    }
+
+
+def dept_options() -> list[str]:
+    """사원 모달의 부서 선택지 — 조직도에 등록된 순서 그대로 넘긴다."""
+    return store.dept_names()
+
+
 def members() -> list[dict]:
     """관리자 > 조직 탭의 사원 목록 (권한 이름 결합)."""
     out = []

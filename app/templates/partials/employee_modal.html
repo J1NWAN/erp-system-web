@@ -24,8 +24,9 @@
         <div>
           <label class="modalform__label" for="emp-dept">부서</label>
           <select class="select" id="emp-dept" data-emp-field="dept">
-            <option>개발본부</option><option>개발1팀</option><option>개발2팀</option>
-            <option>경영지원팀</option><option>영업팀</option>
+            {% for name in depts %}
+            <option>{{ name }}</option>
+            {% endfor %}
           </select>
         </div>
         <div>

@@ -1,0 +1,35 @@
+{# 부서 추가 모달 — 조직도의 "+ 부서 추가" 버튼이 연다 #}
+<div class="modal" data-dept-modal hidden>
+  <div class="modal__scrim" data-action="close-dept"></div>
+
+  <div class="modal__panel modal__panel--sm">
+    <div class="modal__head picker__head-row modal__head--split">
+      <div>
+        <h3 class="modal__title">부서 추가</h3>
+        <p class="modal__hint">부서명과 조직도에서의 위치를 선택하세요</p>
+      </div>
+      <button class="picker__x" type="button" data-action="close-dept" aria-label="닫기">×</button>
+    </div>
+
+    <div class="modal__body modalform">
+      <div>
+        <label class="modalform__label" for="dept-name">부서명</label>
+        <input class="input" type="text" id="dept-name" placeholder="예: 개발3팀" data-dept-name>
+      </div>
+
+      <div>
+        <label class="modalform__label" for="dept-kind">구분</label>
+        <select class="select" id="dept-kind" data-dept-kind>
+          <option value="dept">부서 (본부에 속하지 않음)</option>
+          <option value="team">팀 (본부 하위)</option>
+          <option value="div">본부</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal__foot modal__foot--end">
+      <button class="btn btn--ghost" type="button" data-action="close-dept">취소</button>
+      <button class="btn btn--primary" type="button" data-dept-save>추가</button>
+    </div>
+  </div>
+</div>

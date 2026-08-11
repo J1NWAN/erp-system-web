@@ -34,6 +34,32 @@ class PermIn(BaseModel):
     role_key: str
 
 
+class DeptIn(BaseModel):
+    name: str
+    kind: str = "dept"
+
+
+class RankIn(BaseModel):
+    name: str
+    days: str
+    perm: str
+
+
+class RanksIn(BaseModel):
+    ranks: list[RankIn]
+
+
+class LeaveTypeIn(BaseModel):
+    name: str
+    deduct: str
+    half: bool = False
+    proof: bool = False
+
+
+class LeaveTypesIn(BaseModel):
+    types: list[LeaveTypeIn]
+
+
 class LineModeIn(BaseModel):
     index: int
     mode: str
@@ -53,6 +79,23 @@ class StepFieldIn(BaseModel):
 async def get_directory(q: str = Query("")):
     """인원 선택 모달용 부서별 조직도."""
     return {"groups": view.directory_groups(q)}
+
+
+# --- 부서 ----------------------------------------------------------------
+
+
+@router.get("/depts")
+async def get_depts():
+    return {"tree": view.org_tree()}
+
+
+@router.post("/depts")
+async def add_dept(payload: DeptIn):
+    try:
+        store.add_dept(payload.name, payload.kind)
+    except ValueError as err:
+        raise HTTPException(status_code=422, detail=str(err)) from None
+    return {"tree": view.org_tree()}
 
 
 # --- 휴가 ----------------------------------------------------------------
@@ -143,11 +186,42 @@ async def set_step_field(payload: StepFieldIn):
     return {"lines": view.approval_lines()}
 
 
-# --- 직급 기본 연차 --------------------------------------------------------
+# --- 직급 ----------------------------------------------------------------
+
+
+@router.get("/ranks")
+async def get_ranks():
+    return {"ranks": store.ranks}
+
+
+@router.post("/ranks")
+async def save_ranks(payload: RanksIn):
+    try:
+        store.save_ranks([r.model_dump() for r in payload.ranks])
+    except ValueError as err:
+        raise HTTPException(status_code=422, detail=str(err)) from None
+    return {"ranks": store.ranks}
 
 
 @router.get("/ranks/{name}/days")
 async def get_rank_days(name: str):
-    if not any(r["name"] == name for r in data.RANKS):
+    if name not in store.rank_names():
         raise HTTPException(status_code=404, detail="없는 직급입니다.")
-    return {"rank": name, "days": data.rank_days(name)}
+    return {"rank": name, "days": store.rank_days(name)}
+
+
+# --- 휴가 종류 -------------------------------------------------------------
+
+
+@router.get("/leave-types")
+async def get_leave_types():
+    return {"types": store.leave_config}
+
+
+@router.post("/leave-types")
+async def save_leave_types(payload: LeaveTypesIn):
+    try:
+        store.save_leave_config([t.model_dump() for t in payload.types])
+    except ValueError as err:
+        raise HTTPException(status_code=422, detail=str(err)) from None
+    return {"types": store.leave_config}

@@ -660,6 +660,11 @@ a.trow:hover,
   max-width: 620px;
 }
 
+/* 입력이 두어 개뿐인 모달 — 기본 폭에서는 여백이 과하게 남는다. */
+.modal__panel--sm {
+  max-width: 420px;
+}
+
 .modal__head {
   padding: 20px 22px 16px;
   border-bottom: 1px solid var(--line-4);

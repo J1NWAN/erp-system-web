@@ -37,6 +37,7 @@ for (const [label, w, h] of cases) {
 
   // --- 모달이 탭바를 넘지 않는지
   for (const [name, url, opener] of [
+    ['부서 추가', '/admin?tab=org', '[data-dept-new]'],
     ['사원 등록', '/admin?tab=org', '[data-emp-new]'],
     ['사원 수정', '/admin?tab=org', '[data-emp-edit]'],
     ['권한 추가', '/admin?tab=perm', '[data-role-new]'],
@@ -75,6 +76,11 @@ for (const [label, w, h] of cases) {
   await p.click('[data-emp-new]'); await p.waitForTimeout(400);
   const empFocused = await p.evaluate(()=>document.activeElement?.id==='emp-id');
   !empFocused ? ok('사원 등록: 첫 필드 자동 포커스 안 함') : bad('사원 등록: 자동 포커스 발생');
+  await p.keyboard.press('Escape'); await p.waitForTimeout(200);
+
+  await p.click('[data-dept-new]'); await p.waitForTimeout(400);
+  const deptFocused = await p.evaluate(()=>document.activeElement?.id==='dept-name');
+  !deptFocused ? ok('부서 추가: 부서명 자동 포커스 안 함') : bad('부서 추가: 자동 포커스 발생');
 
   await ctx.close();
 }

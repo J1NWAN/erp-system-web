@@ -165,14 +165,16 @@ async def leave(
     if not _logged_in(erp_session):
         return _login_redirect()
     tab = tab if tab in ("new", "my", "cal") else "new"
-    leave_type = type if type in data.LEAVE_TYPES else data.LEAVE_TYPES[0]
+    # 휴가 종류는 관리자 화면에서 추가·삭제되므로 저장소에서 읽는다.
+    leave_types = store.leave_type_names()
+    leave_type = type if type in leave_types else leave_types[0]
     dur = duration if duration in data.DURATIONS else data.DURATIONS[0]
     end_value = end if dur == "전일" else start
 
     ctx = view.base_context("leave", _collapsed(erp_sidebar))
     ctx.update({
         "tab": tab,
-        "leave_types": data.LEAVE_TYPES,
+        "leave_types": leave_types,
         "durations": data.DURATIONS,
         "leave_type": leave_type,
         "duration": dur,
@@ -224,13 +226,16 @@ async def admin(
         "tab": tab,
         "members": view.members(),
         "perm_roles": view.perm_roles(),
-        "ranks": data.RANKS,
-        "leave_config": data.LEAVE_CONFIG,
+        "org_tree": view.org_tree(),
+        "ranks": store.ranks,
+        "rank_perms": data.RANK_PERMS,
+        "leave_config": store.leave_config,
+        "leave_deducts": data.LEAVE_DEDUCTS,
         "approval_lines": view.approval_lines(),
         "menu_defs": data.MENU_DEFS,
         "roles": view.role_options(),
-        "depts": sorted({m["dept"] for m in data.STAFF}),
-        "rank_names": [r["name"] for r in data.RANKS],
+        "depts": view.dept_options(),
+        "rank_names": store.rank_names(),
         "next_role_key": store.next_role_key(),
     })
     return templates.TemplateResponse(request, "pages/admin.html", ctx)

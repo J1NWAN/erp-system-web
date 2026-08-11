@@ -5,11 +5,12 @@
   "description": "ERP — 사내 업무 시스템 프런트엔드 E2E 테스트",
   "type": "module",
   "scripts": {
-    "test:e2e": "node tests/e2e/interact.spec.mjs && node tests/e2e/admin.spec.mjs && node tests/e2e/responsive.spec.mjs && node tests/e2e/mobile.spec.mjs",
+    "test:e2e": "node tests/e2e/interact.spec.mjs && node tests/e2e/admin.spec.mjs && node tests/e2e/responsive.spec.mjs && node tests/e2e/mobile.spec.mjs && node tests/e2e/orgsetup.spec.mjs",
     "test:interact": "node tests/e2e/interact.spec.mjs",
     "test:admin": "node tests/e2e/admin.spec.mjs",
     "test:responsive": "node tests/e2e/responsive.spec.mjs",
     "test:mobile": "node tests/e2e/mobile.spec.mjs",
+    "test:orgsetup": "node tests/e2e/orgsetup.spec.mjs",
     "shots": "node tests/e2e/screenshots.mjs"
   },
   "devDependencies": {

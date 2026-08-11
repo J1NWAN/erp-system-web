@@ -14,6 +14,185 @@
   // 모바일에서는 자동 포커스를 건너뛴다 (키보드가 올라오며 화면이 확대됨).
   const focusField = window.erpFocus || ((el) => el && el.focus());
 
+  /* --- 부서 추가 모달 -------------------------------------------------------
+     조직도는 서버가 그리므로, 추가에 성공하면 화면을 다시 불러온다. */
+
+  const deptModal = $("[data-dept-modal]");
+
+  function openDept() {
+    if (!deptModal) return;
+    $("[data-dept-name]", deptModal).value = "";
+    $("[data-dept-kind]", deptModal).value = "dept";
+    deptModal.hidden = false;
+    focusField($("[data-dept-name]", deptModal));
+  }
+
+  function closeDept() {
+    if (deptModal) deptModal.hidden = true;
+  }
+
+  async function saveDept() {
+    const name = $("[data-dept-name]", deptModal).value.trim();
+    if (!name) {
+      toast("부서명을 입력하세요.");
+      return;
+    }
+    try {
+      await api("/api/depts", {
+        method: "POST",
+        body: JSON.stringify({ name, kind: $("[data-dept-kind]", deptModal).value }),
+      });
+      closeDept();
+      window.location.reload();
+    } catch (err) {
+      toast(err.message);
+    }
+  }
+
+  if (deptModal) {
+    $$('[data-action="close-dept"]', deptModal).forEach((el) =>
+      el.addEventListener("click", closeDept)
+    );
+    $("[data-dept-save]", deptModal).addEventListener("click", saveDept);
+    // 부서명만 채우면 되는 모달이라 Enter 로 바로 추가할 수 있게 한다.
+    $("[data-dept-name]", deptModal).addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        saveDept();
+      }
+    });
+  }
+
+  document.addEventListener("click", (e) => {
+    if (e.target.closest("[data-dept-new]")) openDept();
+  });
+
+  /* --- 표 편집 (직급 · 휴가 종류) ---------------------------------------------
+     두 표 모두 "행을 추가·삭제하고 마지막에 저장" 방식이라 동작을 공유한다.
+     저장은 화면에 보이는 행 전체를 한 번에 보낸다. */
+
+  /** 마지막 행을 복제해 값만 비운 새 행을 붙인다. */
+  function addTableRow(container, rowSel, fieldAttr) {
+    const rows = $$(rowSel, container);
+    if (!rows.length) return null;
+
+    const clone = rows[rows.length - 1].cloneNode(true);
+    $$(`[${fieldAttr}]`, clone).forEach((el) => {
+      if (el.type === "checkbox") {
+        el.checked = false;
+        el.removeAttribute("checked");
+      } else if (el.tagName === "SELECT") {
+        el.selectedIndex = 0;
+      } else {
+        el.value = "";
+        el.removeAttribute("value");
+      }
+    });
+    container.appendChild(clone);
+    return clone;
+  }
+
+  /** 행을 지운다. 마지막 한 줄은 남기고 값만 비운다. */
+  function removeTableRow(row, rowSel, fieldAttr) {
+    const container = row.parentElement;
+    if ($$(rowSel, container).length <= 1) {
+      $$(`[${fieldAttr}]`, row).forEach((el) => {
+        if (el.type === "checkbox") el.checked = false;
+        else if (el.tagName !== "SELECT") el.value = "";
+      });
+      return;
+    }
+    row.remove();
+  }
+
+  /** 행에서 필드 값을 읽어 객체로 만든다. */
+  function readRow(row, fieldAttr) {
+    const out = {};
+    $$(`[${fieldAttr}]`, row).forEach((el) => {
+      out[el.getAttribute(fieldAttr)] = el.type === "checkbox" ? el.checked : el.value;
+    });
+    return out;
+  }
+
+  /** 순서 열(gridtable__no)을 1부터 다시 매긴다. */
+  function renumber(container, rowSel) {
+    $$(rowSel, container).forEach((row, i) => {
+      const no = $(".gridtable__no", row);
+      if (no) no.textContent = i + 1;
+    });
+  }
+
+  /* 직급 */
+
+  const rankTable = $("[data-rank-rows]");
+  if (rankTable) {
+    document.addEventListener("click", async (e) => {
+      if (e.target.closest("[data-rank-add]")) {
+        const row = addTableRow(rankTable, "[data-rank-row]", "data-rank-field");
+        renumber(rankTable, "[data-rank-row]");
+        if (row) focusField($('[data-rank-field="name"]', row));
+        return;
+      }
+
+      const del = e.target.closest("[data-rank-del]");
+      if (del) {
+        removeTableRow(del.closest("[data-rank-row]"), "[data-rank-row]", "data-rank-field");
+        renumber(rankTable, "[data-rank-row]");
+        return;
+      }
+
+      if (!e.target.closest("[data-rank-save]")) return;
+      const ranks = $$("[data-rank-row]", rankTable).map((r) =>
+        readRow(r, "data-rank-field")
+      );
+      try {
+        await api("/api/ranks", { method: "POST", body: JSON.stringify({ ranks }) });
+        // 화면은 이미 저장한 그대로다. 다시 그릴 필요가 없어 토스트만 띄운다.
+        toast("직급 설정을 저장했습니다.");
+      } catch (err) {
+        toast(err.message);
+      }
+    });
+  }
+
+  /* 휴가 종류 */
+
+  const leaveTable = $("[data-leave-rows]");
+  if (leaveTable) {
+    document.addEventListener("click", async (e) => {
+      if (e.target.closest("[data-leave-add]")) {
+        const row = addTableRow(leaveTable, "[data-leave-row]", "data-leave-field");
+        if (row) {
+          // 복제한 체크박스의 aria-label 에는 원본 종류명이 남아 있다.
+          $('[data-leave-field="half"]', row).setAttribute("aria-label", "반차 허용");
+          $('[data-leave-field="proof"]', row).setAttribute("aria-label", "증빙 필요");
+          focusField($('[data-leave-field="name"]', row));
+        }
+        return;
+      }
+
+      const del = e.target.closest("[data-leave-del]");
+      if (del) {
+        removeTableRow(del.closest("[data-leave-row]"), "[data-leave-row]", "data-leave-field");
+        return;
+      }
+
+      if (!e.target.closest("[data-leave-save]")) return;
+      const types = $$("[data-leave-row]", leaveTable).map((r) =>
+        readRow(r, "data-leave-field")
+      );
+      try {
+        await api("/api/leave-types", {
+          method: "POST",
+          body: JSON.stringify({ types }),
+        });
+        toast("휴가 종류를 저장했습니다.");
+      } catch (err) {
+        toast(err.message);
+      }
+    });
+  }
+
   /* --- 권한 모달 ---------------------------------------------------------- */
 
   const roleModal = $("[data-role-modal]");
@@ -305,6 +484,7 @@
 
   document.addEventListener("keydown", (e) => {
     if (e.key !== "Escape") return;
+    closeDept();
     closeRole();
     closeEmp();
   });
