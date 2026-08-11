@@ -86,6 +86,37 @@ for (const [label, w, h] of cases) {
     : bad(`카드가 화면 밖으로 밀림: 카드 ${grown.cardR} / 화면 ${grown.vw}`);
   if (w===390 && h===844) await p.screenshot({path: `${OUT}/mobile-leaveform.png`});
 
+  /* 날짜 글자가 세로 가운데에 오는지. 입력칸을 잘라 찍고 캔버스로 픽셀을 읽어
+     글자(어두운 픽셀)의 세로 중심을 잰 뒤, 같은 높이의 일반 입력칸과 비교한다. */
+  await p.goto(BASE+'/leave?tab=new'); await p.waitForTimeout(350);
+  const inkCenter = async (sel) => {
+    const b64 = (await p.locator(sel).screenshot()).toString('base64');
+    return p.evaluate(async (b64)=>{
+      const img = new Image();
+      await new Promise(r=>{ img.onload=r; img.src='data:image/png;base64,'+b64; });
+      const c = document.createElement('canvas');
+      c.width=img.width; c.height=img.height;
+      const g = c.getContext('2d'); g.drawImage(img,0,0);
+      const d = g.getImageData(0,0,c.width,c.height).data;
+      const xMax = Math.floor(c.width*0.6);   // 오른쪽 달력 아이콘은 제외
+      let top=-1, bot=-1;
+      for(let y=0;y<c.height;y++){
+        for(let x=0;x<xMax;x++){
+          const i=(y*c.width+x)*4;
+          if(d[i]<140 && d[i+1]<140 && d[i+2]<140){ if(top<0) top=y; bot=y; break; }
+        }
+      }
+      return top<0 ? null : {center:(top+bot)/2, box:c.height/2};
+    }, b64);
+  };
+  const dateInk = await inkCenter('#l-start');
+  const textInk = await inkCenter('#l-tel');
+  const drift = dateInk && textInk ? Math.abs(dateInk.center - textInk.center) : 999;
+  drift <= 3
+    ? ok(`날짜 글자 세로 위치가 일반 입력칸과 같음 (차이 ${drift.toFixed(1)}px)`)
+    : bad(`날짜 글자가 세로로 치우침: 차이 ${drift}px`);
+
+
   // --- 자동 포커스 없어야 함
   await p.goto(BASE+'/daily/new'); await p.waitForTimeout(350);
   await p.click('[data-picker-open="#box-to"]'); await p.waitForTimeout(500);
@@ -111,6 +142,35 @@ for (const [label, w, h] of cases) {
   const deptFocused = await p.evaluate(()=>document.activeElement?.id==='dept-name');
   !deptFocused ? ok('부서 추가: 부서명 자동 포커스 안 함') : bad('부서 추가: 자동 포커스 발생');
 
+  await ctx.close();
+}
+
+/* --- 날짜 입력의 세로 정렬 기준값 -----------------------------------------
+   iOS 는 기본 스타일을 끄면 값 텍스트를 입력칸 위쪽에 붙여 그린다. --date-line 을
+   줄 높이로 써서 가운데로 내리는데, Chromium 에는 그 동작이 없어 화면으로는 확인할
+   수 없다. 대신 이 값이 입력칸 안쪽 높이와 맞는지 검사한다. 입력칸 높이만 바꾸고
+   변수를 안 고치면 여기서 걸린다. */
+console.log('\n[날짜 입력 --date-line 기준값]');
+{
+  const ctx = await b.newContext({viewport:{width:1440,height:1000}});
+  await ctx.addCookies([{name:'erp_session',value:'1',url:BASE}]);
+  const p = await ctx.newPage();
+  for (const [url, sel, opener] of [
+    ['/leave?tab=new', '#l-start', null],
+    ['/daily/new', '.gridtable input[type="date"]', null],
+    ['/admin?tab=org', '#emp-joined', '[data-emp-new]'],
+  ]) {
+    await p.goto(BASE+url); await p.waitForTimeout(300);
+    if (opener) { await p.click(opener); await p.waitForTimeout(300); }
+    const r = await p.evaluate((s)=>{
+      const e=document.querySelector(s); const cs=getComputedStyle(e);
+      return {inner: e.offsetHeight - parseFloat(cs.borderTopWidth) - parseFloat(cs.borderBottomWidth),
+              v: cs.getPropertyValue('--date-line').trim()};
+    }, sel);
+    r.v === `${r.inner}px`
+      ? ok(`${sel}: --date-line ${r.v} = 안쪽 높이 ${r.inner}px`)
+      : bad(`${sel}: --date-line ${r.v} ≠ 안쪽 높이 ${r.inner}px`);
+  }
   await ctx.close();
 }
 

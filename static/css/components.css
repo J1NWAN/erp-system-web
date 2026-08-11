@@ -463,6 +463,7 @@ a.trow:hover,
 /* 입력형 테이블 (업무일지 작성) */
 .table-input {
   width: 100%;
+  --date-line: 32px;
   height: 34px;
   padding: 0 10px;
   border: 1px solid var(--line-3);
@@ -500,6 +501,8 @@ a.trow:hover,
 .select,
 .textarea {
   width: 100%;
+  /* --date-line 은 테두리를 뺀 안쪽 높이다. 날짜 입력의 세로 가운데 정렬에 쓴다. */
+  --date-line: 38px;
   height: 40px;
   padding: 0 12px;
   border: 1px solid var(--line-2);
@@ -522,11 +525,14 @@ input[type="date"] {
 
 /* 값 텍스트는 WebKit 이 별도 요소로 그린다. iOS 기본 정렬이 달라
    글자가 오른쪽으로 밀리므로 왼쪽 정렬과 여백을 직접 지정한다.
-   min-height 는 값이 비었을 때 높이가 무너지는 것을 막는다. */
+
+   세로 정렬도 iOS 에서만 어긋난다. 기본 스타일을 끄면 값 요소가 입력칸 위쪽에
+   붙어버려 글자가 위로 치우친다. 줄 높이를 입력칸 안쪽 높이(--date-line)에 맞추면
+   글자가 그 줄 안에서 가운데로 온다. Chrome 은 이 유사요소를 쓰지 않아 영향이 없다. */
 input[type="date"]::-webkit-date-and-time-value {
   text-align: left;
   margin: 0;
-  min-height: 1.2em;
+  line-height: var(--date-line, normal);
 }
 
 .input:disabled,

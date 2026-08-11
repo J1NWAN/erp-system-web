@@ -195,6 +195,11 @@ npm run test:e2e
   카드가 화면 밖으로 밀린다. 입력과 칸 양쪽에 `min-width:0`, 입력에 `max-width:100%`
   와 `appearance:none` 을 줘서 옆 입력칸과 같은 자리만 쓰게 한다.
   (Chromium 에는 이 동작이 없어 `test:mobile` 은 글자 크기를 키워 같은 상황을 만든다.)
+- **날짜 글자는 세로 가운데에 온다.** 위의 `appearance:none` 때문에 iOS 는 값 텍스트를
+  입력칸 위쪽에 붙여 그린다. `::-webkit-date-and-time-value` 의 줄 높이를 입력칸
+  안쪽 높이(`--date-line`)에 맞춰 내린다. `--date-line` 은 `.input`·`.table-input` 이
+  각자 자기 높이에서 테두리를 뺀 값으로 선언하고, 두 값이 어긋나지 않는지
+  `test:mobile` 이 검사한다. (Chrome 은 이 유사요소를 쓰지 않아 렌더링에 영향이 없다.)
 - 화면 높이는 `100vh` 대신 `100dvh`를 쓴다. iOS Safari 는 주소창이 보이는 동안에도
   `100vh`를 큰 뷰포트 기준으로 계산해서, `100vh`만 쓰면 실제 기기에서만 스크롤이 생긴다.
 
