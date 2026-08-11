@@ -9,13 +9,13 @@
 
   <div class="filterbar">
     <div class="tabs">
-      <a class="tabs__btn {{ 'is-active' if tab == 'view' }}" href="/weekly?tab=view">조회</a>
-      <a class="tabs__btn {{ 'is-active' if tab == 'write' }}" href="/weekly?tab=write">작성</a>
+      <a class="tabs__btn {{ 'is-active' if tab == 'view' }}" href="/weekly?tab=view&week={{ week }}">조회</a>
+      <a class="tabs__btn {{ 'is-active' if tab == 'write' }}" href="/weekly?tab=write&week={{ week }}">작성</a>
     </div>
     <div class="weeknav">
-      <button class="weeknav__btn" type="button" aria-label="이전 주">‹</button>
-      <span class="weeknav__label">2026년 32주차 · 8/3 – 8/7</span>
-      <button class="weeknav__btn" type="button" aria-label="다음 주">›</button>
+      <a class="weeknav__btn" href="/weekly?tab={{ tab }}&week={{ prev_week }}" aria-label="이전 주">‹</a>
+      <span class="weeknav__label">{{ week_label }}</span>
+      <a class="weeknav__btn" href="/weekly?tab={{ tab }}&week={{ next_week }}" aria-label="다음 주">›</a>
     </div>
   </div>
 
@@ -25,7 +25,7 @@
     <div class="card card--flush">
       <div class="card__head">
         <h3 class="card__title">개발1팀 주간보고 제출 현황</h3>
-        <span class="card__note">6명 중 4명 제출</span>
+        <span class="card__note">{{ summary.members }}명 중 {{ summary.submitted }}명 제출</span>
       </div>
       <div class="table-wrap">
         <div class="thead weekly-grid">
@@ -45,16 +45,16 @@
     <div class="card summary">
       <h3 class="card__title summary__title">이번 주 요약</h3>
       <div class="summary__list">
-        <div class="summary__row"><span>등록된 업무</span><strong>34건</strong></div>
-        <div class="summary__row"><span>완료</span><strong>27건</strong></div>
-        <div class="summary__row"><span>진행중</span><strong>5건</strong></div>
-        <div class="summary__row summary__row--last"><span>보류</span><strong>2건</strong></div>
+        <div class="summary__row"><span>등록된 업무</span><strong>{{ summary.total }}건</strong></div>
+        <div class="summary__row"><span>완료</span><strong>{{ summary.done }}건</strong></div>
+        <div class="summary__row"><span>진행중</span><strong>{{ summary.doing }}건</strong></div>
+        <div class="summary__row summary__row--last"><span>보류</span><strong>{{ summary.hold }}건</strong></div>
       </div>
       <div class="summary__bar">
-        <div class="summary__done" style="width:79%"></div>
-        <div class="summary__doing" style="width:15%"></div>
+        <div class="summary__done" style="width:{{ summary.done_pct }}%"></div>
+        <div class="summary__doing" style="width:{{ summary.doing_pct }}%"></div>
       </div>
-      <div class="summary__rate">완료율 79%</div>
+      <div class="summary__rate">완료율 {{ summary.done_pct }}%</div>
     </div>
   </div>
 
@@ -62,13 +62,14 @@
   {# ---------- 작성 ---------- #}
   <form class="card" method="get" action="/weekly" data-doc-form>
     <input type="hidden" name="tab" value="view">
+    <input type="hidden" name="week" value="{{ week }}">
     <div class="doc__body">
 
       <div class="metatable">
         <div class="metatable__key">제목</div>
         <div class="metatable__val">
           <label class="sr-only" for="w-title">제목</label>
-          <input class="table-input" type="text" id="w-title" value="[개발1팀] 32주차 주간업무보고 — 김지현">
+          <input class="table-input" type="text" id="w-title" value="[개발1팀] {{ week_no }}주차 주간업무보고 — {{ user.name }}">
         </div>
         <div class="metatable__key">수신자</div>
         <div class="metatable__val">

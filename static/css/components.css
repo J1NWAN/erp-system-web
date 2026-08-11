@@ -1092,15 +1092,21 @@ a.trow:hover,
   color: var(--ink-3);
 }
 
+/* button 과 a 양쪽으로 쓴다. 기간 이동은 링크(a)라 button 의 기본
+   가운데 정렬·밑줄 없음을 여기서 직접 지정해 준다. */
 .weeknav__btn {
   width: 28px;
   height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #e0ddef;
   background: var(--surface);
   border-radius: var(--radius-sm);
   cursor: pointer;
   color: var(--ink-3);
   line-height: 1;
+  text-decoration: none;
 }
 
 .weeknav__label {
@@ -1162,6 +1168,7 @@ a.trow:hover,
 .weeknav__btn:hover {
   background: var(--soft);
   color: var(--primary);
+  text-decoration: none;
 }
 
 .sidecard__action:hover {

@@ -42,7 +42,7 @@ def base_context(screen: str, collapsed: bool = False) -> dict:
         "user": CURRENT_USER,
         "collapsed": collapsed,
         "pending_count": len(data.APPROVAL_ITEMS),
-        "today_label": "2026-08-05 (수)",
+        "today_label": data.date_label(data.TODAY),
     }
 
 

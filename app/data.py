@@ -8,6 +8,11 @@ from __future__ import annotations
 
 from datetime import date, timedelta
 
+# 시안이 "오늘"로 삼는 날짜. 대시보드 · 캘린더 · 주차 계산의 기준이다.
+TODAY = date(2026, 8, 5)
+
+WEEKDAY_KO = "월화수목금토일"
+
 # --- 조직도 --------------------------------------------------------------
 
 DIRECTORY = [
@@ -157,6 +162,15 @@ WEEKLY_ROWS = [
     {"writer": "서지우", "title": "—", "at": "—", "state": "미제출"},
 ]
 
+# 위 WEEKLY_ROWS 가 가리키는 주(2026년 32주차)의 월요일.
+# 주간보고 화면에서 이 주를 벗어나면 아래 규칙으로 목록을 만든다.
+WEEK_ANCHOR = date(2026, 8, 3)
+
+WEEKLY_TEAM = [r["writer"] for r in WEEKLY_ROWS]
+
+# 32주차 요약 카드의 시드 값. 다른 주차는 제출 인원에서 계산한다.
+WEEKLY_SUMMARY = {"total": 34, "done": 27, "doing": 5, "hold": 2}
+
 WEEKLY_TASKS = [
     {"no": 1, "system": "ERP · 휴가", "content": "휴가 신청/승인 API 연동 완료", "received": "2026-08-01", "started": "2026-08-03", "done": "완료"},
     {"no": 2, "system": "ERP · 조직", "content": "조직도 트리 캐싱 적용", "received": "2026-07-30", "started": "2026-08-04", "done": "진행중"},
@@ -209,16 +223,34 @@ TEAM_WEEK_RAW = [
     ("정하윤", [None, "오전반차", None, None, None]),
 ]
 
-# 팀 휴가 캘린더 이벤트 — 키는 8월 일자
-CALENDAR_EVENTS = {
-    6: [("박서준 연차", "full")],
-    7: [("박서준 연차", "full"), ("이도윤 반차", "half")],
-    12: [("정하윤 병가", "etc")],
-    17: [("김지현 연차", "full")],
-    18: [("김지현 연차", "full"), ("한도현 반차", "half")],
-    24: [("최민서 경조", "etc")],
-    27: [("이도윤 연차", "full")],
-}
+# 팀 휴가 캘린더 이벤트 — (날짜, 사원, 라벨, 색 토큰).
+# 한 날짜에 여러 건이면 여기 적힌 순서대로 셀에 쌓인다.
+CALENDAR_EVENTS = [
+    # 개발1팀 — 시안의 8월 화면에 보이던 일정
+    (date(2026, 8, 6), "박서준", "박서준 연차", "full"),
+    (date(2026, 8, 7), "박서준", "박서준 연차", "full"),
+    (date(2026, 8, 7), "이도윤", "이도윤 반차", "half"),
+    (date(2026, 8, 12), "정하윤", "정하윤 병가", "etc"),
+    (date(2026, 8, 17), "김지현", "김지현 연차", "full"),
+    (date(2026, 8, 18), "김지현", "김지현 연차", "full"),
+    (date(2026, 8, 18), "한도현", "한도현 반차", "half"),
+    (date(2026, 8, 24), "최민서", "최민서 경조", "etc"),
+    (date(2026, 8, 27), "이도윤", "이도윤 연차", "full"),
+    # 다른 부서 — 부서 필터를 바꿔야 보인다
+    (date(2026, 8, 11), "서지우", "서지우 연차", "full"),
+    (date(2026, 8, 13), "윤채원", "윤채원 연차", "full"),
+    (date(2026, 8, 20), "오수빈", "오수빈 반차", "half"),
+    # 김지현의 지난 휴가(MY_LEAVES)와 같은 날짜 — 이전 달로 넘기면 보인다
+    (date(2026, 7, 31), "김지현", "김지현 반차", "half"),
+    (date(2026, 6, 24), "김지현", "김지현 연차", "full"),
+    (date(2026, 6, 25), "김지현", "김지현 연차", "full"),
+    (date(2026, 5, 19), "김지현", "김지현 병가", "etc"),
+    (date(2026, 4, 8), "김지현", "김지현 포상", "etc"),
+    (date(2026, 3, 12), "김지현", "김지현 기타", "etc"),
+]
+
+# 팀 휴가 캘린더의 부서 선택지. "전체 부서"는 필터를 걸지 않는다.
+CAL_DEPTS = ["개발1팀", "전체 부서"]
 
 PAGE_TITLES = {
     "dash": ("대시보드", "2026년 8월 5일 수요일 기준"),
@@ -273,21 +305,146 @@ def business_days(start: str, end: str, duration: str) -> float:
     return float(n)
 
 
-def calendar_cells() -> list[dict]:
-    """5주 x 7일 그리드. 원본과 동일하게 6번째 칸이 1일이 되도록 5칸 오프셋."""
+def date_label(d: date) -> str:
+    """헤더 날짜칩 형식 — 2026-08-05 (수)"""
+    return f"{d:%Y-%m-%d} ({WEEKDAY_KO[d.weekday()]})"
+
+
+# --- 팀 휴가 캘린더 --------------------------------------------------------
+
+
+def parse_month(value: str | None) -> tuple[int, int]:
+    """'2026-08' 을 (2026, 8) 로. 형식이 틀리면 오늘이 속한 달."""
+    try:
+        y, m = value.split("-")
+        y, m = int(y), int(m)
+        if 1 <= m <= 12 and 1 <= y <= 9999:
+            return y, m
+    except (AttributeError, ValueError):
+        pass
+    return TODAY.year, TODAY.month
+
+
+def shift_month(year: int, month: int, delta: int) -> tuple[int, int]:
+    i = year * 12 + (month - 1) + delta
+    return i // 12, i % 12 + 1
+
+
+def month_label(year: int, month: int) -> str:
+    return f"{year}년 {month}월"
+
+
+def days_in_month(year: int, month: int) -> int:
+    ny, nm = shift_month(year, month, 1)
+    return (date(ny, nm, 1) - date(year, month, 1)).days
+
+
+def calendar_cells(year: int | None = None, month: int | None = None,
+                   dept: str = "") -> list[dict]:
+    """일요일 시작 달력 그리드.
+
+    행 수는 달에 맞춰 4~6주로 달라진다. 원본 시안은 35칸으로 고정돼 있어
+    8월 30·31일이 잘려 나갔는데, 여기서는 그 달의 마지막 날까지 모두 그린다.
+
+    dept 를 주면 그 부서 사원의 일정만 남긴다. 빈 값이면 전체.
+    """
+    year = year if year is not None else TODAY.year
+    month = month if month is not None else TODAY.month
+
+    first = date(year, month, 1)
+    # weekday(): 월=0 … 일=6. 일요일 시작 달력이므로 일요일이 0이 되게 옮긴다.
+    offset = (first.weekday() + 1) % 7
+    total = days_in_month(year, month)
+    weeks = -(-(offset + total) // 7)  # 올림 나눗셈
+
+    events: dict[date, list[dict]] = {}
+    for when, who, label_, tone in CALENDAR_EVENTS:
+        if when.year != year or when.month != month:
+            continue
+        if dept and (person(who) or {}).get("dept") != dept:
+            continue
+        events.setdefault(when, []).append({"label": label_, "tone": tone})
+
     cells = []
-    for i in range(35):
-        num = i - 5
-        in_month = 1 <= num <= 31
-        dow = i % 7
+    for i in range(weeks * 7):
+        num = i - offset + 1
+        in_month = 1 <= num <= total
         cells.append({
             "num": str(num) if in_month else "",
             "in_month": in_month,
-            "today": num == 5,
-            "dow": dow,
-            "events": [{"label": lb, "tone": tone} for lb, tone in CALENDAR_EVENTS.get(num, [])] if in_month else [],
+            "today": in_month and date(year, month, num) == TODAY,
+            "dow": i % 7,
+            "events": events.get(date(year, month, num), []) if in_month else [],
         })
     return cells
+
+
+# --- 주간업무보고 ----------------------------------------------------------
+
+
+def week_monday(d: date) -> date:
+    return d - timedelta(days=d.weekday())
+
+
+def parse_week(value: str | None) -> date:
+    """'2026-08-03' 을 그 주의 월요일로. 형식이 틀리면 오늘이 속한 주."""
+    try:
+        return week_monday(date.fromisoformat(value))
+    except (TypeError, ValueError):
+        return week_monday(TODAY)
+
+
+def week_label(monday: date) -> str:
+    """2026년 32주차 · 8/3 – 8/7 (업무일 기준이라 금요일까지만 적는다)"""
+    friday = monday + timedelta(days=4)
+    iso = monday.isocalendar()
+    return (f"{iso.year}년 {iso.week}주차 · "
+            f"{monday.month}/{monday.day} – {friday.month}/{friday.day}")
+
+
+def weekly_rows(monday: date) -> list[dict]:
+    """주차별 제출 현황.
+
+    시드 데이터가 있는 32주차는 그대로 쓰고, 나머지는 규칙으로 만든다.
+    아직 오지 않은 주는 전원 미제출, 지난 주는 전원 승인 완료로 본다.
+    """
+    if monday == WEEK_ANCHOR:
+        return [dict(r) for r in WEEKLY_ROWS]
+
+    if monday > WEEK_ANCHOR:
+        return [{"writer": n, "title": "—", "at": "—", "state": "미제출"}
+                for n in WEEKLY_TEAM]
+
+    friday = monday + timedelta(days=4)
+    week_no = monday.isocalendar().week
+    return [
+        {
+            "writer": n,
+            "title": f"[개발1팀] {week_no}주차 주간업무보고",
+            # 제출 시각은 사람마다 조금씩 다르게, 다시 열어도 같은 값이 나오게 만든다.
+            "at": f"{friday:%m-%d} 17:{(i * 7 + 12) % 60:02d}",
+            "state": "승인",
+        }
+        for i, n in enumerate(WEEKLY_TEAM)
+    ]
+
+
+def weekly_summary(monday: date, rows: list[dict]) -> dict:
+    """요약 카드 — 등록/완료/진행중/보류 건수와 완료율."""
+    if monday == WEEK_ANCHOR:
+        s = dict(WEEKLY_SUMMARY)
+    else:
+        submitted = sum(1 for r in rows if r["state"] != "미제출")
+        total = submitted * 6  # 1인당 평균 6건으로 잡는다
+        done = round(total * 0.8)
+        s = {"total": total, "done": done, "doing": total - done, "hold": 0}
+
+    total = s["total"]
+    s["done_pct"] = round(s["done"] / total * 100) if total else 0
+    s["doing_pct"] = round(s["doing"] / total * 100) if total else 0
+    s["submitted"] = sum(1 for r in rows if r["state"] != "미제출")
+    s["members"] = len(rows)
+    return s
 
 
 def team_week() -> list[dict]:

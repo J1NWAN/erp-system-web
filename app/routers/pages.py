@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from datetime import timedelta
 
 from fastapi import APIRouter, Cookie, Form, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -130,16 +131,25 @@ async def daily_new(
 async def weekly(
     request: Request,
     tab: str = Query("view"),
+    week: str | None = Query(None),
     erp_session: str | None = Cookie(None),
     erp_sidebar: str | None = Cookie(None),
 ):
     if not _logged_in(erp_session):
         return _login_redirect()
     tab = tab if tab in ("view", "write") else "view"
+    monday = data.parse_week(week)
+    rows = data.weekly_rows(monday)
     ctx = view.base_context("weekly", _collapsed(erp_sidebar))
     ctx.update({
         "tab": tab,
-        "rows": [{**r, "state_tone": data.state_tone(r["state"])} for r in data.WEEKLY_ROWS],
+        "rows": [{**r, "state_tone": data.state_tone(r["state"])} for r in rows],
+        "summary": data.weekly_summary(monday, rows),
+        "week_label": data.week_label(monday),
+        "week_no": monday.isocalendar().week,
+        "week": monday.isoformat(),
+        "prev_week": (monday - timedelta(days=7)).isoformat(),
+        "next_week": (monday + timedelta(days=7)).isoformat(),
         "tasks": [
             {**t, "done_tone": "primary" if t["done"] == "완료" else "muted"}
             for t in data.WEEKLY_TASKS
@@ -159,6 +169,8 @@ async def leave(
     duration: str = Query("전일"),
     start: str = Query("2026-08-17"),
     end: str = Query("2026-08-18"),
+    month: str | None = Query(None),
+    dept: str | None = Query(None),
     erp_session: str | None = Cookie(None),
     erp_sidebar: str | None = Cookie(None),
 ):
@@ -170,6 +182,12 @@ async def leave(
     leave_type = type if type in leave_types else leave_types[0]
     dur = duration if duration in data.DURATIONS else data.DURATIONS[0]
     end_value = end if dur == "전일" else start
+
+    # 팀 캘린더 — 달 이동과 부서 필터
+    cal_dept = dept if dept in data.CAL_DEPTS else data.CAL_DEPTS[0]
+    year, mon = data.parse_month(month)
+    prev_y, prev_m = data.shift_month(year, mon, -1)
+    next_y, next_m = data.shift_month(year, mon, 1)
 
     ctx = view.base_context("leave", _collapsed(erp_sidebar))
     ctx.update({
@@ -186,7 +204,16 @@ async def leave(
         "my_leaves": [
             {**l, "state_tone": data.state_tone(l["state"])} for l in data.MY_LEAVES
         ],
-        "cal_cells": data.calendar_cells(),
+        # "전체 부서" 는 필터를 걸지 않는다.
+        "cal_cells": data.calendar_cells(
+            year, mon, "" if cal_dept == "전체 부서" else cal_dept
+        ),
+        "cal_label": data.month_label(year, mon),
+        "cal_month": f"{year:04d}-{mon:02d}",
+        "cal_depts": data.CAL_DEPTS,
+        "cal_dept": cal_dept,
+        "prev_month": f"{prev_y:04d}-{prev_m:02d}",
+        "next_month": f"{next_y:04d}-{next_m:02d}",
     })
     return templates.TemplateResponse(request, "pages/leave.html", ctx)
 
